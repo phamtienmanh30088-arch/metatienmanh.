@@ -3,141 +3,494 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tmanh Meta - Space App</title>
+    <title>Tmanh Meta - Đẳng Cấp Thể Hiện</title>
     <style>
         :root {
+            --bg-dark: #07080f;
+            --card-bg: rgba(16, 18, 28, 0.75);
             --neon-blue: #00f0ff;
             --neon-purple: #7000ff;
             --neon-pink: #ff007f;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
             --danger: #ff4757;
             --success: #2ed573;
         }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
         body {
-            margin: 0; padding: 20px 10px; background-color: #06060c;
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            font-family: 'Segoe UI', system-ui, sans-serif; box-sizing: border-box; overflow-x: hidden; position: relative;
-            color: #ffffff;
-        }
-        
-        .app-space {
-            width: 100%; max-width: 820px; 
-            background: rgba(10, 10, 20, 0.85); 
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 24px; display: flex; flex-direction: column; padding: 30px 25px; box-sizing: border-box; gap: 20px; z-index: 10;
-            border: 4px solid transparent; animation: appLED 4s linear infinite;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
-        }
-
-        @keyframes appLED {
-            0% { border-color: #ff0055; box-shadow: 0 0 25px rgba(255,0,85,0.4); }
-            25% { border-color: #ffcc00; box-shadow: 0 0 25px rgba(255,204,0,0.4); }
-            50% { border-color: #00ccff; box-shadow: 0 0 25px rgba(0,204,255,0.4); }
-            75% { border-color: #cc00ff; box-shadow: 0 0 25px rgba(204,0,255,0.4); }
-            100% { border-color: #ff0055; box-shadow: 0 0 25px rgba(255,0,85,0.4); }
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 10px;
+            position: relative;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(112, 0, 255, 0.08) 0%, transparent 40%);
         }
 
-        .brand-header {
-            text-align: center; margin-bottom: 5px;
+        /* Hiệu ứng nền Cyber */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 38, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 1;
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
         }
 
-        .name-display { 
-            font-size: 32px; color: #ffffff; margin: 0; font-weight: 900; 
-            text-transform: uppercase; letter-spacing: 2px;
+        .main-container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.15), inset 0 0 15px rgba(112, 0, 255, 0.1);
+            padding: 25px;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Header / Brand */
+        .header-brand {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand-title {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 2px;
             background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            text-transform: uppercase;
         }
 
-        .sub-text { font-size: 13px; color: #a5a5d4; margin-top: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .brand-subtitle {
+            font-size: 12px;
+            color: var(--neon-blue);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: 5px;
+            font-weight: 600;
+        }
 
-        .music-controller {
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple)); border: none; color: #ffffff; padding: 10px 24px; font-size: 13px; font-weight: 700;
-            border-radius: 30px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4);
-            margin: 0 auto; width: fit-content;
+        /* Music Controller Bar */
+        .music-bar {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(112, 0, 255, 0.3);
+            border-radius: 14px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .music-icon {
+            font-size: 20px;
+            color: var(--neon-pink);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .music-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .music-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .btn-music {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: none;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-music:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.7);
         }
 
         /* Navigation Tabs */
         .nav-tabs {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
         }
 
         .nav-btn {
-            flex: 1; min-width: 90px; padding: 10px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; color: #a5a5d4; font-weight: 700; font-size: 12px; cursor: pointer; text-align: center; white-space: nowrap; transition: 0.3s;
+            flex: 1;
+            min-width: 100px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 240, 255, 0.1);
+            color: #fff;
+            border-color: rgba(0, 240, 255, 0.4);
         }
 
         .nav-btn.active {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(112, 0, 255, 0.25));
-            color: var(--neon-blue); border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(112, 0, 255, 0.2));
+            color: var(--neon-blue);
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
         }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        .tab-content {
+            display: none;
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         /* Inputs & Buttons */
         .input-field {
-            width: 100%; padding: 10px 14px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 10px; color: #fff; font-size: 13px; outline: none; box-sizing: border-box; transition: 0.3s;
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
         }
-        .input-field:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+
+        .input-field:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        textarea.input-field {
+            resize: vertical;
+            min-height: 80px;
+        }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); border: none; border-radius: 10px;
-            color: #fff; font-weight: 700; padding: 10px 16px; font-size: 12px; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px; padding: 6px 12px; font-size: 11px; cursor: pointer; }
-        .btn-danger { background: var(--danger); border: none; color: #fff; border-radius: 8px; padding: 6px 12px; font-size: 11px; cursor: pointer; }
 
-        /* Profile Layout */
-        .avatar-huge { 
-            width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--neon-blue); 
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); margin-bottom: 10px; object-fit: cover; background-color: #1a1a2e;
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+            transform: translateY(-2px);
         }
 
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-secondary:hover { background: rgba(0, 240, 255, 0.2); border-color: var(--neon-blue); }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .avatar-box {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, #ff0055, #ffcc00);
+            color: #000;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        .user-bio {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 8px 0 15px;
+            font-style: italic;
+        }
+
+        .user-meta {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 15px;
+        }
+
+        /* Feed & Posts */
         .post-card {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 15px; margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
 
-        .badge-admin { background: linear-gradient(135deg, #ff0055, #ffcc00); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 8px; }
-
-        /* Chat Layout */
-        .chat-box {
-            display: flex; height: 380px; background: rgba(0,0,0,0.4); border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
-        }
-        .chat-list { width: 35%; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; }
-        .chat-item { padding: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .chat-item.active { background: rgba(0,240,255,0.15); }
-        .chat-main { width: 65%; display: flex; flex-direction: column; }
-        .chat-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .msg-bubble { max-width: 75%; padding: 8px 12px; border-radius: 12px; font-size: 12px; }
-        .msg-me { align-self: flex-end; background: var(--neon-purple); color: #fff; }
-        .msg-them { align-self: flex-start; background: rgba(255,255,255,0.1); color: #fff; }
-
-        .lock-notice {
-            text-align: center; padding: 40px 20px; background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px dashed var(--neon-pink);
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
 
-        @media (max-width: 600px) {
-            .chat-box { flex-direction: column; height: 450px; }
-            .chat-list { width: 100%; height: 130px; }
-            .chat-main { width: 100%; height: 320px; }
+        .post-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--neon-blue);
+            object-fit: cover;
+        }
+
+        /* Friend Search Card */
+        .friend-search-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+        }
+
+        /* Chat System */
+        .chat-container {
+            display: flex;
+            height: 420px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .chat-sidebar {
+            width: 35%;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            overflow-y: auto;
+        }
+
+        .chat-user-item {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background 0.2s;
+        }
+
+        .chat-user-item:hover, .chat-user-item.active {
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        .chat-main {
+            width: 65%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg-bubble {
+            max-width: 75%;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .msg-me {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            color: #fff;
+        }
+
+        .msg-them {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .chat-input-bar {
+            padding: 10px;
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .lock-screen {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            border: 1px dashed var(--neon-pink);
+        }
+
+        /* Admin Table */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .admin-table th {
+            color: var(--neon-blue);
+            font-weight: 700;
+        }
+
+        @media (max-width: 650px) {
+            .chat-container { flex-direction: column; height: 480px; }
+            .chat-sidebar { width: 100%; height: 140px; }
+            .chat-main { width: 100%; height: 340px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-space">
-        <!-- Header Brand -->
-        <div class="brand-header">
-            <div class="name-display">Tmanh Meta</div>
-            <div class="sub-text">nơi thể hiện đẳng cấp của bạn</div>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header-brand">
+            <div class="brand-title">Tmanh Meta</div>
+            <div class="brand-subtitle">nơi thể hiện đẳng cấp của bạn</div>
         </div>
 
         <!-- Music Controller -->
-        <button class="music-controller" id="music-node" onclick="togglePlayMusic()">🎵 Bật / Dừng Nhạc 24/7</button>
+        <div class="music-bar">
+            <div class="music-info">
+                <div class="music-icon">🎵</div>
+                <div>
+                    <div class="music-title">Nơi Này Có Anh - Sơn Tùng M-TP</div>
+                    <div class="music-sub">Tự động phát 24/7 khi chạm</div>
+                </div>
+            </div>
+            <button class="btn-music" id="btn-music-toggle" onclick="toggleMusic()">Bật / Tắt Nhạc</button>
+        </div>
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
@@ -149,13 +502,13 @@
             <div class="nav-btn" id="nav-admin-btn" style="display: none;" onclick="switchTab('tab-admin')">👑 Admin</div>
         </div>
 
-        <!-- TAB 1: BẢNG TIN -->
+        <!-- TAB 1: BẢNG TIN (FEED) -->
         <div id="tab-feed" class="tab-content active">
-            <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 14px; margin-bottom: 15px;">
-                <textarea id="post-input" class="input-field" placeholder="Bạn đang nghĩ gì? Chia sẻ đẳng cấp của bạn..." style="min-height: 60px;"></textarea>
-                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <input type="text" id="post-img-input" class="input-field" placeholder="Link ảnh đính kèm (nếu có)..." style="flex: 1;">
-                    <button class="btn-primary" onclick="createPost()">Đăng Bài</button>
+            <div style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 15px; margin-bottom: 20px;">
+                <textarea id="post-input" class="input-field" placeholder="Bạn đang nghĩ gì? Chia sẻ đẳng cấp của bạn..."></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <input type="text" id="post-img-input" class="input-field" placeholder="Dán link ảnh đính kèm (nếu có)..." style="flex: 1;">
+                    <button class="btn-primary" onclick="createPost()" style="width: 120px;">Đăng Bài</button>
                 </div>
             </div>
             <div id="posts-container"></div>
@@ -163,91 +516,105 @@
 
         <!-- TAB 2: TÌM BẠN BÈ -->
         <div id="tab-friends" class="tab-content">
-            <div id="friends-public-view">
-                <div style="margin-bottom: 15px;">
-                    <input type="text" id="search-friend-input" class="input-field" placeholder="🔎 Nhập tên tài khoản bạn bè cần tìm..." oninput="searchFriends()">
-                </div>
-                <div id="friends-search-results"></div>
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="search-friend-input" class="input-field" placeholder="🔎 Nhập tên tài khoản bạn bè muốn tìm kiếm..." oninput="searchFriends()">
             </div>
+            <div id="friends-search-results"></div>
         </div>
 
-        <!-- TAB 3: NHẮN TIN RIÊNG (Cần Đăng Nhập) -->
+        <!-- TAB 3: NHẮN TIN (Cần đăng nhập) -->
         <div id="tab-chat" class="tab-content">
-            <div id="chat-locked-notice" class="lock-notice" style="display: none;">
+            <div id="chat-lock-view" class="lock-screen" style="display: none;">
                 <h3 style="color: var(--neon-pink); margin-bottom: 10px;">🔒 Yêu Cầu Đăng Nhập</h3>
-                <p style="font-size: 13px; color: #a5a5d4; margin-bottom: 15px;">Bạn cần đăng nhập tài khoản để vào bên trong sử dụng chức năng nhắn tin riêng.</p>
-                <button class="btn-primary" onclick="switchTab('tab-auth')">Đăng Nhập Ngay</button>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Bạn cần đăng nhập tài khoản để vào bên trong sử dụng tính năng nhắn tin riêng tư.</p>
+                <button class="btn-primary" onclick="switchTab('tab-auth')" style="max-width: 200px; margin: 0 auto;">Đăng Nhập Ngay</button>
             </div>
 
-            <div id="chat-active-view" class="chat-box" style="display: none;">
-                <div class="chat-list" id="chat-user-list"></div>
+            <div id="chat-main-view" class="chat-container" style="display: none;">
+                <div class="chat-sidebar" id="chat-user-list"></div>
                 <div class="chat-main">
                     <div class="chat-messages" id="chat-messages-box">
-                        <div style="text-align: center; color: #a5a5d4; font-size: 11px; margin-top: 40px;">
-                            Chọn một người dùng để bắt đầu cuộc trò chuyện.
+                        <div style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 50px;">
+                            Chọn một người dùng từ danh sách bên trái để bắt đầu nhắn tin.
                         </div>
                     </div>
-                    <div style="padding: 8px; display: flex; gap: 6px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div class="chat-input-bar">
                         <input type="text" id="chat-input" class="input-field" placeholder="Nhập tin nhắn..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-                        <button class="btn-primary" onclick="sendChatMessage()">Gửi</button>
+                        <button class="btn-primary" onclick="sendChatMessage()" style="width: 80px;">Gửi</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 4: TRANG CÁ NHÂN -->
+        <!-- TAB 4: TRANG CÁ NHÂN (PROFILE) -->
         <div id="tab-profile" class="tab-content">
-            <div style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 16px; border: 1px solid rgba(0,240,255,0.2);">
-                <img id="prof-avatar" class="avatar-huge" src="" alt="Avatar">
-                <div style="font-size: 18px; font-weight: 800;">
+            <div class="profile-card">
+                <div class="avatar-box">
+                    <img id="prof-avatar" class="avatar-img" src="" alt="Avatar">
+                </div>
+                <div class="user-name">
                     <span id="prof-username">Khách</span>
                     <span id="prof-admin-badge"></span>
                 </div>
-                <div style="font-size: 12px; color: #a5a5d4; margin: 6px 0 12px; font-style: italic;" id="prof-bio">"Chưa có tiểu sử"</div>
-                <div style="font-size: 11px; color: rgba(255,255,255,0.4); margin-bottom: 15px;" id="prof-created">Ngày tham gia: --/--/----</div>
+                <div class="user-bio" id="prof-bio">"Chưa có tiểu sử"</div>
+                <div class="user-meta" id="prof-created">Ngày tham gia: --/--/----</div>
 
-                <div id="prof-edit-box" style="display: none; text-align: left; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 10px; margin-top: 10px;">
-                    <label style="font-size: 11px; color: #a5a5d4;">Link Avatar Mới:</label>
-                    <input type="text" id="edit-avatar-input" class="input-field" placeholder="Dán link ảnh..." style="margin-bottom: 8px;">
-                    <label style="font-size: 11px; color: #a5a5d4;">Tiểu Sử (Bio):</label>
-                    <textarea id="edit-bio-input" class="input-field" placeholder="Nhập tiểu sử..."></textarea>
-                    <button class="btn-primary" onclick="saveProfileChanges()" style="width: 100%; margin-top: 8px;">Lưu Thay Đổi</button>
+                <div id="prof-edit-section" style="text-align: left; display: none; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 15px;">
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Link Avatar Mới:</label>
+                        <input type="text" id="edit-avatar-input" class="input-field" placeholder="Nhập URL hình ảnh avatar...">
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Tiểu Sử Cá Nhân (Bio):</label>
+                        <textarea id="edit-bio-input" class="input-field" placeholder="Nhập tiểu sử của bạn..."></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="saveProfileChanges()">Lưu Thay Đổi</button>
+                    <button class="btn-danger" onclick="logout()" style="width: 100%; margin-top: 10px; padding: 10px;">Đăng Xuất</button>
                 </div>
 
-                <div id="prof-actions-user" style="display: none; margin-top: 10px;">
-                    <button class="btn-secondary" onclick="toggleEditProfile()" style="width: 100%; margin-bottom: 6px;">✏️ Chỉnh Sửa Profile</button>
-                    <button class="btn-danger" onclick="logout()" style="width: 100%;">🚪 Đăng Xuất</button>
+                <div id="prof-guest-section" style="margin-top: 15px;">
+                    <button class="btn-primary" onclick="switchTab('tab-auth')">Đăng Nhập Ngay</button>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 5: ĐĂNG NHẬP / ĐĂNG KÝ -->
+        <!-- TAB 5: ĐĂNG NHẬP & ĐĂNG KÝ (AUTH) -->
         <div id="tab-auth" class="tab-content">
-            <div style="max-width: 360px; margin: 0 auto; background: rgba(0,0,0,0.4); padding: 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
-                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+            <div style="max-width: 380px; margin: 0 auto; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08);">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                     <button class="nav-btn active" id="btn-mode-login" onclick="setAuthMode('login')">Đăng Nhập</button>
                     <button class="nav-btn" id="btn-mode-register" onclick="setAuthMode('register')">Đăng Ký</button>
                 </div>
-                <div style="margin-bottom: 10px;">
-                    <label style="font-size: 11px; color: #a5a5d4;">Tài Khoản:</label>
-                    <input type="text" id="auth-username" class="input-field" placeholder="Tên tài khoản...">
+                
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">Tài Khoản:</label>
+                    <input type="text" id="auth-username" class="input-field" placeholder="Nhập tên tài khoản...">
                 </div>
-                <div style="margin-bottom: 10px;">
-                    <label style="font-size: 11px; color: #a5a5d4;">Mật Khẩu:</label>
-                    <input type="password" id="auth-password" class="input-field" placeholder="Mật khẩu...">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">Mật Khẩu:</label>
+                    <input type="password" id="auth-password" class="input-field" placeholder="Nhập mật khẩu...">
                 </div>
-                <button class="btn-primary" id="btn-auth-submit" onclick="handleAuthSubmit()" style="width: 100%;">Đăng Nhập Ngay</button>
+                <div style="margin-bottom: 15px; display: none;" id="reg-avatar-group">
+                    <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px;">Link Avatar (Tùy chọn):</label>
+                    <input type="text" id="auth-avatar" class="input-field" placeholder="Dán link ảnh đại diện...">
+                </div>
+
+                <button class="btn-primary" id="btn-auth-submit" onclick="handleAuthSubmit()">Đăng Nhập Ngay</button>
             </div>
         </div>
 
-        <!-- TAB 6: ADMIN PANEL -->
+        <!-- TAB 6: QUẢN TRỊ ADMIN -->
         <div id="tab-admin" class="tab-content">
-            <h4 style="color: var(--neon-blue); margin-bottom: 10px;">👑 Quản Trị Admin</h4>
+            <h3 style="color: var(--neon-blue); margin-bottom: 15px;">👑 Bảng Quản Trị Hệ Thống (Admin Only)</h3>
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                <table class="admin-table">
                     <thead>
-                        <tr style="color: var(--neon-blue); text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <th style="padding: 6px;">TK</th><th style="padding: 6px;">MK</th><th style="padding: 6px;">Trạng Thái</th><th style="padding: 6px;">Hành Động</th>
+                        <tr>
+                            <th>Tài Khoản</th>
+                            <th>Mật Khẩu</th>
+                            <th>Ngày Tạo</th>
+                            <th>Trạng Thái Acc</th>
+                            <th>Hành Động</th>
                         </tr>
                     </thead>
                     <tbody id="admin-user-list"></tbody>
@@ -256,335 +623,81 @@
         </div>
     </div>
 
-    <!-- Audio Player (Nơi Này Có Anh) -->
-    <audio id="app-track" src="https://files.catbox.moe/u8o0q2.mp3" loop preload="auto"></audio>
+    <!-- Audio Player -->
+    <audio id="audio-player" loop preload="auto">
+        <source src="https://files.catbox.moe/u8o0q2.mp3" type="audio/mpeg">
+        <source src="nhac.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop";
 
         let users = JSON.parse(localStorage.getItem('tm_users')) || [
-            { username: "admin", password: "admin123", avatar: DEFAULT_AVATAR, bio: "Admin Tmanh Meta", createdAt: "2026-01-01", isAdmin: true, isBanned: false, isMuted: false, friends: [] }
+            {
+                username: "admin",
+                password: "admin123",
+                avatar: DEFAULT_AVATAR,
+                bio: "Quản trị viên hệ thống Tmanh Meta",
+                createdAt: "2026-01-01",
+                isAdmin: true,
+                isBanned: false,
+                isMuted: false,
+                friends: []
+            }
         ];
 
         let posts = JSON.parse(localStorage.getItem('tm_posts')) || [
-            { id: 1, author: "admin", content: "chào mừng bạn đến với chúng tôi - admin\nNơi thể hiện đẳng cấp!", image: "", time: "2026-03-01 10:00", likes: ["admin"], comments: [] }
+            {
+                id: 1,
+                author: "admin",
+                content: "chào mừng bạn đến với chúng tôi - admin\nNơi thể hiện đẳng cấp và giao lưu kết nối!",
+                image: "",
+                time: "2026-03-01 10:00",
+                likes: ["admin"],
+                comments: [{ author: "admin", text: "Chúc mọi người trải nghiệm vui vẻ!" }]
+            }
         ];
 
         let chats = JSON.parse(localStorage.getItem('tm_chats')) || [];
-        let friendRequests = JSON.parse(localStorage.getItem('tm_friend_requests')) || [];
         let currentUser = JSON.parse(localStorage.getItem('tm_current_user')) || null;
         let authMode = 'login';
         let activeChatUser = null;
-        let isPlaying = false;
+        let isMusicPlaying = false;
 
-        const audioTrack = document.getElementById('app-track');
+        const audio = document.getElementById('audio-player');
 
         window.onload = function() {
             saveData();
             updateUIState();
             renderPosts();
             searchFriends();
-            initMusic();
+            initMusicAutoplay();
         };
 
         function saveData() {
             localStorage.setItem('tm_users', JSON.stringify(users));
             localStorage.setItem('tm_posts', JSON.stringify(posts));
             localStorage.setItem('tm_chats', JSON.stringify(chats));
-            localStorage.setItem('tm_friend_requests', JSON.stringify(friendRequests));
             localStorage.setItem('tm_current_user', JSON.stringify(currentUser));
         }
 
-        function initMusic() {
+        function initMusicAutoplay() {
             document.body.addEventListener('click', function() {
-                if (!isPlaying) { audioTrack.play().then(() => isPlaying = true).catch(e => {}); }
+                if (!isMusicPlaying) playMusic();
             }, { once: true });
         }
 
-        function togglePlayMusic() {
-            if (!isPlaying) { audioTrack.play(); isPlaying = true; alert("Đang phát nhạc!"); } 
-            else { audioTrack.pause(); isPlaying = false; alert("Đã dừng nhạc!"); }
+        function playMusic() {
+            audio.play().then(() => {
+                isMusicPlaying = true;
+                document.getElementById('btn-music-toggle').innerHTML = "Dừng Nhạc";
+                document.getElementById('btn-music-toggle').style.background = "#2ed573";
+            }).catch(e => console.log("Cần tương tác để phát nhạc"));
         }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            
-            if (tabId === 'tab-chat') renderChatView();
-            if (tabId === 'tab-friends') searchFriends();
-            if (tabId === 'tab-profile') renderProfile();
-            if (tabId === 'tab-admin') renderAdminPanel();
-        }
-
-        function updateUIState() {
-            const authNav = document.getElementById('nav-auth-btn');
-            const adminNav = document.getElementById('nav-admin-btn');
-
-            if (currentUser) {
-                authNav.innerText = "🚪 " + currentUser.username;
-                authNav.onclick = logout;
-                adminNav.style.display = currentUser.isAdmin ? "block" : "none";
-            } else {
-                authNav.innerText = "🔑 Đăng Nhập";
-                authNav.onclick = () => switchTab('tab-auth');
-                adminNav.style.display = "none";
-            }
-        }
-
-        /* SEARCH FRIENDS */
-        function searchFriends() {
-            const query = document.getElementById('search-friend-input').value.trim().toLowerCase();
-            const container = document.getElementById('friends-search-results');
-            container.innerHTML = '';
-
-            const filtered = users.filter(u => u.username.toLowerCase().includes(query) && (!currentUser || u.username !== currentUser.username));
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div style="font-size:12px; color:#a5a5d4; text-align:center; padding:15px;">Không tìm thấy người dùng nào.</div>`;
-                return;
-            }
-
-            filtered.forEach(u => {
-                const isFriend = currentUser && currentUser.friends && currentUser.friends.includes(u.username);
-                let btnAction = '';
-
-                if (!currentUser) {
-                    btnAction = `<button class="btn-secondary" onclick="switchTab('tab-auth')">Đăng nhập để kết bạn</button>`;
-                } else if (isFriend) {
-                    btnAction = `<button class="btn-primary" style="background:#2ed573;" onclick="openChatWith('${u.username}')">💬 Nhắn Tin</button>`;
-                } else {
-                    btnAction = `<button class="btn-secondary" onclick="addFriend('${u.username}')">➕ Kết Bạn</button>`;
-                }
-
-                container.innerHTML += `
-                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:10px; margin-bottom:8px;">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <img src="${u.avatar || DEFAULT_AVATAR}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid var(--neon-blue);">
-                            <div>
-                                <div style="font-weight:700; font-size:13px;">${u.username} ${u.isAdmin ? '<span class="badge-admin">ADMIN</span>' : ''}</div>
-                                <div style="font-size:10px; color:#a5a5d4;">${u.bio || 'Chưa có tiểu sử'}</div>
-                            </div>
-                        </div>
-                        ${btnAction}
-                    </div>
-                `;
-            });
-        }
-
-        function addFriend(username) {
-            if (!currentUser) return switchTab('tab-auth');
-            if (!currentUser.friends) currentUser.friends = [];
-            currentUser.friends.push(username);
-
-            const u = users.find(x => x.username === username);
-            if (u) {
-                if (!u.friends) u.friends = [];
-                u.friends.push(currentUser.username);
-            }
-            saveData();
-            searchFriends();
-            alert("Đã kết bạn thành công!");
-        }
-
-        function openChatWith(username) {
-            switchTab('tab-chat');
-            selectChatUser(username);
-        }
-
-        /* CHAT SYSTEM */
-        function renderChatView() {
-            if (!currentUser) {
-                document.getElementById('chat-locked-notice').style.display = 'block';
-                document.getElementById('chat-active-view').style.display = 'none';
-            } else {
-                document.getElementById('chat-locked-notice').style.display = 'none';
-                document.getElementById('chat-active-view').style.display = 'flex';
-                renderChatSidebar();
-            }
-        }
-
-        function renderChatSidebar() {
-            const sidebar = document.getElementById('chat-user-list');
-            sidebar.innerHTML = '';
-
-            users.forEach(u => {
-                if (currentUser && u.username === currentUser.username) return;
-                sidebar.innerHTML += `
-                    <div class="chat-item ${activeChatUser === u.username ? 'active' : ''}" onclick="selectChatUser('${u.username}')">
-                        <img src="${u.avatar || DEFAULT_AVATAR}" style="width:26px; height:26px; border-radius:50%; object-fit:cover;">
-                        <div style="font-size:11px; font-weight:700;">${u.username}</div>
-                    </div>
-                `;
-            });
-        }
-
-        function selectChatUser(username) {
-            activeChatUser = username;
-            renderChatSidebar();
-            renderChatMessages();
-        }
-
-        function renderChatMessages() {
-            const box = document.getElementById('chat-messages-box');
-            if (!activeChatUser) return;
-
-            const conversation = chats.filter(m => 
-                (m.from === currentUser.username && m.to === activeChatUser) ||
-                (m.from === activeChatUser && m.to === currentUser.username)
-            );
-
-            box.innerHTML = conversation.map(m => `
-                <div class="msg-bubble ${m.from === currentUser.username ? 'msg-me' : 'msg-them'}">${m.text}</div>
-            `).join('');
-
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function sendChatMessage() {
-            if (!currentUser) return;
-            if (currentUser.isMuted) return alert("Tài khoản của bạn đã bị khóa chat!");
-            if (!activeChatUser) return alert("Chọn người để nhắn tin!");
-
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            chats.push({ from: currentUser.username, to: activeChatUser, text: text });
-            saveData();
-            input.value = '';
-            renderChatMessages();
-        }
-
-        /* AUTH & PROFILE */
-        function setAuthMode(mode) {
-            authMode = mode;
-            document.getElementById('btn-mode-login').classList.toggle('active', mode === 'login');
-            document.getElementById('btn-mode-register').classList.toggle('active', mode === 'register');
-            document.getElementById('btn-auth-submit').innerText = mode === 'login' ? 'Đăng Nhập Ngay' : 'Tạo Tài Khoản';
-        }
-
-        function handleAuthSubmit() {
-            const u = document.getElementById('auth-username').value.trim();
-            const p = document.getElementById('auth-password').value.trim();
-
-            if (!u || !p) return alert("Nhập tài khoản & mật khẩu!");
-
-            if (authMode === 'login') {
-                const found = users.find(x => x.username === u && x.password === p);
-                if (!found) return alert("Sai tài khoản hoặc mật khẩu!");
-                if (found.isBanned) return alert("Tài khoản bị khóa!");
-
-                currentUser = found;
-            } else {
-                if (users.some(x => x.username === u)) return alert("Tài khoản đã tồn tại!");
-                currentUser = { username: u, password: p, avatar: DEFAULT_AVATAR, bio: "Thành viên Tmanh Meta", createdAt: new Date().toISOString().split('T')[0], isAdmin: false, isBanned: false, isMuted: false, friends: [] };
-                users.push(currentUser);
-            }
-
-            saveData();
-            updateUIState();
-            switchTab('tab-profile');
-        }
-
-        function logout() { currentUser = null; saveData(); updateUIState(); switchTab('tab-feed'); }
-
-        function renderProfile() {
-            const u = currentUser || { username: "chào mừng bạn đến với chúng tôi - admin", avatar: DEFAULT_AVATAR, bio: "Vui lòng đăng nhập", createdAt: "--/--/----", isAdmin: false };
-            document.getElementById('prof-avatar').src = u.avatar || DEFAULT_AVATAR;
-            document.getElementById('prof-username').innerText = u.username;
-            document.getElementById('prof-bio').innerText = '"' + u.bio + '"';
-            document.getElementById('prof-created').innerText = "Ngày tham gia: " + u.createdAt;
-            document.getElementById('prof-admin-badge').innerHTML = u.isAdmin ? '<span class="badge-admin">ADMIN</span>' : '';
-            document.getElementById('prof-actions-user').style.display = currentUser ? 'block' : 'none';
-        }
-
-        function toggleEditProfile() {
-            const box = document.getElementById('prof-edit-box');
-            box.style.display = box.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function saveProfileChanges() {
-            if (!currentUser) return;
-            const newAvt = document.getElementById('edit-avatar-input').value.trim();
-            const newBio = document.getElementById('edit-bio-input').value.trim();
-
-            if (newAvt) currentUser.avatar = newAvt;
-            currentUser.bio = newBio;
-            const idx = users.findIndex(x => x.username === currentUser.username);
-            if (idx !== -1) users[idx] = currentUser;
-
-            saveData();
-            renderProfile();
-            alert("Đã cập nhật!");
-        }
-
-        /* POSTS & FEED */
-        function createPost() {
-            if (!currentUser) return alert("Vui lòng đăng nhập!");
-            if (currentUser.isMuted) return alert("Tài khoản bị khóa đăng bài!");
-
-            const content = document.getElementById('post-input').value.trim();
-            const image = document.getElementById('post-img-input').value.trim();
-
-            if (!content) return alert("Nhập nội dung!");
-
-            posts.unshift({ id: Date.now(), author: currentUser.username, content: content, image: image, time: new Date().toLocaleTimeString(), likes: [], comments: [] });
-            saveData(); renderPosts();
-            document.getElementById('post-input').value = '';
-            document.getElementById('post-img-input').value = '';
-        }
-
-        function renderPosts() {
-            const container = document.getElementById('posts-container');
-            container.innerHTML = '';
-            posts.forEach(p => {
-                const authorUser = users.find(u => u.username === p.author) || { avatar: DEFAULT_AVATAR };
-                container.innerHTML += `
-                    <div class="post-card">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <img src="${authorUser.avatar || DEFAULT_AVATAR}" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
-                                <div>
-                                    <div style="font-weight:700; font-size:13px;">${p.author} ${p.author==='admin'?'<span class="badge-admin">ADMIN</span>':''}</div>
-                                    <div style="font-size:9px; color:#a5a5d4;">${p.time}</div>
-                                </div>
-                            </div>
-                            ${currentUser && (currentUser.isAdmin || currentUser.username === p.author) ? `<button class="btn-danger" onclick="deletePost(${p.id})">Xóa</button>` : ''}
-                        </div>
-                        <div style="font-size:13px; margin-bottom:8px; line-height:1.4;">${p.content}</div>
-                        ${p.image ? `<img src="${p.image}" style="width:100%; border-radius:8px; max-height:280px; object-fit:cover; margin-bottom:8px;">` : ''}
-                    </div>
-                `;
-            });
-        }
-
-        function deletePost(id) { posts = posts.filter(p => p.id !== id); saveData(); renderPosts(); }
-
-        /* ADMIN */
-        function renderAdminPanel() {
-            const tbody = document.getElementById('admin-user-list');
-            tbody.innerHTML = '';
-            users.forEach(u => {
-                if (u.isAdmin) return;
-                tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                        <td style="padding:6px; font-weight:700;">${u.username}</td>
-                        <td style="padding:6px; color:var(--neon-pink);">${u.password}</td>
-                        <td style="padding:6px;">${u.isBanned ? 'Khóa' : 'OK'}</td>
-                        <td style="padding:6px;">
-                            <button class="btn-danger" onclick="toggleBan('${u.username}')">${u.isBanned ? 'Mở' : 'Khóa'}</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        function toggleBan(username) {
-            const u = users.find(x => x.username === username);
-            if (u) { u.isBanned = !u.isBanned; saveData(); renderAdminPanel(); }
-        }
-    </script>
-</body>
-</html>
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                audio.pause();
+                isMusicPlaying = false;
+                document.getElementById('btn-music-toggle').innerHTML = "Bật Nhạc";
+                document.getElementById('btn-music-toggle').style.background =
