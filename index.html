@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tiến Mạnh Metai - App Đẳng Cấp</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #0b0e14; color: #e6edf3; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+
+        /* WELCOME SCREEN */
+        #welcome-screen { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #05060a; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; text-align: center; padding: 20px; 
+        }
+        .wel-title { color: #00f0ff; font-size: 22px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+        .wel-sub { color: #ffcc00; font-size: 13px; font-weight: bold; text-transform: uppercase; margin-bottom: 25px; }
+
+        /* AUTH SCREEN */
+        #auth-screen { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0b0e14; 
+            display: none; justify-content: center; align-items: center; z-index: 88888; padding: 15px; 
+        }
+
+        /* HEADER APP */
+        .fb-header {
+            width: 100%; background: #161b22; border-bottom: 1px solid #30363d; padding: 10px;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000;
+        }
+        .fb-brand { color: #00f0ff; font-size: 16px; font-weight: 900; text-transform: uppercase; white-space: nowrap; }
+        .fb-nav { display: flex; gap: 4px; align-items: center; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .nav-btn {
+            background: transparent; border: none; color: #8b949e; font-weight: bold; font-size: 11px;
+            padding: 6px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+        }
+        .nav-btn.active { background: #21262d; color: #00f0ff; }
+
+        /* LAYOUT */
+        .main-wrapper { flex: 1; width: 100%; max-width: 800px; margin: 0 auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+        .tab-content { display: none; width: 100%; }
+        .tab-content.active { display: block; }
+
+        /* COMPONENTS */
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+        .input-box { width: 100%; padding: 10px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; color: #fff; font-size: 13px; margin-bottom: 8px; outline: none; }
+        
+        .btn-main { width: 100%; padding: 10px; background: linear-gradient(135deg, #00f0ff, #7000ff); border: none; border-radius: 8px; color: #fff; font-weight: bold; font-size: 12px; cursor: pointer; text-transform: uppercase; }
+        .btn-sec { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; }
+        .btn-danger { background: #da3633; color: #fff; border: none; padding: 5px 8px; border-radius: 6px; font-size: 10px; cursor: pointer; font-weight: bold; }
+        .badge-admin { background: linear-gradient(135deg, #ff0055, #ffcc00); color: #000; font-size: 9px; font-weight: 900; padding: 2px 5px; border-radius: 4px; }
+
+        .music-bar { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+        /* CHAT LAYOUT DI ĐỘNG */
+        .chat-layout { display: flex; flex-direction: column; height: 70vh; background: #161b22; border-radius: 10px; border: 1px solid #30363d; overflow: hidden; }
+        .chat-list { height: 120px; border-bottom: 1px solid #30363d; overflow-y: auto; background: #0d1117; }
+        .chat-user-item { padding: 10px; font-size: 12px; font-weight: bold; cursor: pointer; border-bottom: 1px solid #21262d; }
+        .chat-user-item.active { background: rgba(0, 240, 255, 0.2); color: #00f0ff; }
+        .chat-main { flex: 1; display: flex; flex-direction: column; }
+        .chat-msgs { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .msg { max-width: 85%; padding: 6px 10px; border-radius: 8px; font-size: 12px; word-break: break-word; }
+        .msg-me { align-self: flex-end; background: #7000ff; color: #fff; }
+        .msg-them { align-self: flex-start; background: #21262d; color: #fff; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th, td { padding: 6px; text-align: left; border-bottom: 1px solid #21262d; }
+        th { color: #00f0ff; }
+    </style>
+</head>
+<body>
+
+    <!-- MÀN HÌNH CHÀO MỪNG -->
+    <div id="welcome-screen">
+        <div class="wel-title">chào mừng bạn đến với Tiến Mạnh Metai</div>
+        <div class="wel-sub">sự sang trọng của b sẽ làm nổi bật</div>
+        <button class="btn-main" onclick="startApp()" style="max-width: 200px;">Vào Hệ Thống</button>
+    </div>
+
+    <!-- MÀN HÌNH ĐĂNG NHẬP / ĐĂNG KÝ -->
+    <div id="auth-screen">
+        <div class="card" style="width: 100%; max-width: 320px;">
+            <div style="display: flex; gap: 5px; margin-bottom: 12px;">
+                <button class="nav-btn active" id="btn-m-l" onclick="setAuthTab('login')" style="flex:1;">Đăng Nhập</button>
+                <button class="nav-btn" id="btn-m-r" onclick="setAuthTab('register')" style="flex:1;">Đăng Ký</button>
+            </div>
+            <input type="text" id="auth-u" class="input-box" placeholder="Tên đăng nhập...">
+            <input type="password" id="auth-p" class="input-box" placeholder="Mật khẩu...">
+            <input type="password" id="auth-p2" class="input-box" placeholder="Nhập lại mật khẩu..." style="display:none;">
+            <button class="btn-main" id="auth-btn-submit" onclick="handleAuth()">Đăng Nhập Ngay</button>
+        </div>
+    </div>
+
+    <!-- HỆ THỐNG CHÍNH -->
+    <div id="main-app" style="display: none; width: 100%;">
+        <header class="fb-header">
+            <div class="fb-brand">Tiến Mạnh Metai</div>
+            <div class="fb-nav">
+                <button class="nav-btn active" onclick="goTab('tab-feed', event)">🌐 Bảng Tin</button>
+                <button class="nav-btn" onclick="goTab('tab-friends', event)">🔍 Tìm Bạn</button>
+                <button class="nav-btn" onclick="goTab('tab-chat', event)">💬 Nhắn Tin</button>
+                <button class="nav-btn" onclick="goTab('tab-profile', event)">👤 Cá Nhân</button>
+                <button class="nav-btn" id="nav-admin" style="display:none;" onclick="goTab('tab-admin', event)">👑 Admin</button>
+                <button class="btn-danger" onclick="doLogout()">Thoát</button>
+            </div>
+        </header>
+
+        <div class="main-wrapper">
+            <!-- PHÁT NHẠC MP3 -->
+            <div class="music-bar">
+                <div style="overflow: hidden; padding-right: 8px;">
+                    <div style="font-size: 11px; font-weight: bold;" id="track-title">🎵 Nhạc Nền Mặc Định</div>
+                    <input type="file" id="file-mp3" accept="audio/*" style="font-size: 10px; margin-top: 2px;" onchange="uploadMusic(event)">
+                </div>
+                <button class="btn-sec" id="btn-music" onclick="playToggleMusic()">Bật / Tắt</button>
+            </div>
+
+            <!-- TAB 1: BẢNG TIN -->
+            <div id="tab-feed" class="tab-content active">
+                <div class="card">
+                    <textarea id="post-text" class="input-box" placeholder="Bạn đang nghĩ gì?..." style="min-height: 60px;"></textarea>
+                    <div style="margin-bottom: 8px;">
+                        <label style="font-size: 10px; color: #8b949e; display: block; margin-bottom: 2px;">📷 📹 Chọn Ảnh/Video từ thư viện:</label>
+                        <input type="file" id="post-file" accept="image/*,video/*" class="input-box" style="padding: 4px;">
+                    </div>
+                    <button class="btn-main" onclick="submitPost()">Đăng Bài Viết</button>
+                </div>
+                <div id="feed-box"></div>
+            </div>
+
+            <!-- TAB 2: TÌM BẠN BÈ -->
+            <div id="tab-friends" class="tab-content">
+                <input type="text" id="search-u" class="input-box" placeholder="🔎 Tìm kiếm tên tài khoản..." oninput="drawFriends()">
+                <div id="friends-box"></div>
+            </div>
+
+            <!-- TAB 3: NHẮN TIN -->
+            <div id="tab-chat" class="tab-content">
+                <div class="chat-layout">
+                    <div class="chat-list" id="chat-u-list"></div>
+                    <div class="chat-main">
+                        <div class="chat-msgs" id="chat-msg-box"></div>
+                        <div style="padding: 6px; display: flex; gap: 5px; border-top: 1px solid #30363d;">
+                            <input type="text" id="chat-input" class="input-box" placeholder="Nhập tin nhắn..." style="margin:0;" onkeypress="if(event.key==='Enter') sendMsg()">
+                            <button class="btn-main" style="width: 55px;" onclick="sendMsg()">Gửi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: TRANG CÁ NHÂN -->
+            <div id="tab-profile" class="tab-content">
+                <div class="card" style="text-align: center;">
+                    <img id="p-avt" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop" style="width: 75px; height: 75px; border-radius: 50%; border: 2px solid #00f0ff; object-fit: cover; margin-bottom: 6px;">
+                    <div style="font-size: 15px; font-weight: bold;" id="p-name">Khách</div>
+                    <div id="p-badge" style="margin-top: 2px;"></div>
+                    <div style="font-size: 11px; color: #8b949e; margin: 6px 0;" id="p-bio">"Chưa có tiểu sử"</div>
+
+                    <div style="text-align: left; margin-top: 10px; border-top: 1px solid #30363d; padding-top: 10px;">
+                        <label style="font-size:10px; color:#8b949e;">Tên mới:</label>
+                        <input type="text" id="in-name" class="input-box">
+                        <label style="font-size:10px; color:#8b949e;">Link Avatar mới:</label>
+                        <input type="text" id="in-avt" class="input-box">
+                        <label style="font-size:10px; color:#8b949e;">Bio / Tiểu sử:</label>
+                        <input type="text" id="in-bio" class="input-box">
+                        <button class="btn-main" onclick="saveProf()">Lưu Cập Nhật</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: ADMIN -->
+            <div id="tab-admin" class="tab-content">
+                <h3 style="color: #00f0ff; font-size: 13px; margin-bottom: 8px;">👑 Quản Trị Hệ Thống Admin</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr><th>TK</th><th>MK</th><th>Acc</th><th>Chat</th><th>Sửa</th></tr>
+                        </thead>
+                        <tbody id="admin-box"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO PLAYER -->
+    <audio id="player" loop preload="auto">
+        <source src="https://files.catbox.moe/u8o0q2.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const DEFAULT_AVT = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop";
+
+        let users = JSON.parse(localStorage.getItem('tm_users')) || [
+            { username: "admin", password: "admin123", name: "Admin", avatar: DEFAULT_AVT, bio: "Admin Tiến Mạnh Metai", createdAt: "2026-01-01", isAdmin: true, isBanned: false, isMuted: false, friends: [] }
+        ];
+        let posts = JSON.parse(localStorage.getItem('tm_posts')) || [];
+        let chats = JSON.parse(localStorage.getItem('tm_chats')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('tm_curr')) || null;
+        let authMode = 'login';
+        let activeChat = null;
+        let isMusicPlaying = false;
+
+        const audio = document.getElementById('player');
+
+        window.onload = function() {
+            saveData();
+            if (currentUser) {
+                showMain();
+            } else {
+                document.getElementById('welcome-screen').style.display = 'flex';
+            }
+        };
+
+        function saveData() {
+            localStorage.setItem('tm_users', JSON.stringify(users));
+            localStorage.setItem('tm_posts', JSON.stringify(posts));
+            localStorage.setItem('tm_chats', JSON.stringify(chats));
+            localStorage.setItem('tm_curr', JSON.stringify(currentUser));
+        }
+
+        function startApp() {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'flex';
+        }
+
+        function showMain() {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            updateAdminBtn();
+            drawFeed();
+            drawFriends();
+        }
+
+        /* MUSIC */
+        function playToggleMusic() {
+            if (isMusicPlaying) {
+                audio.pause(); isMusicPlaying = false;
+                document.getElementById('btn-music').innerText = "Bật / Tắt";
+            } else {
+                audio.play().then(() => { isMusicPlaying = true; document.getElementById('btn-music').innerText = "Đang Phát"; }).catch(e => {});
+            }
+        }
+
+        function uploadMusic(e) {
+            const file = e.target.files[0];
+            if (file) {
+                audio.src = URL.createObjectURL(file);
+                audio.play();
+                isMusicPlaying = true;
+                document.getElementById('track-title').innerText = "🎵 " + file.name;
+                document.getElementById('btn-music').innerText = "Đang Phát";
+            }
+        }
+
+        /* TABS */
+        function goTab(id, e) {
+            document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(e && e.target) e.target.classList.add('active');
+
+            if (id === 'tab-friends') drawFriends();
+            if (id === 'tab-chat') drawChatList();
+            if (id === 'tab-profile') drawProfile();
+            if (id === 'tab-admin') drawAdmin();
+        }
+
+        function updateAdminBtn() {
+            document.getElementById('nav-admin').style.display = (currentUser && currentUser.isAdmin) ? "inline-block" : "none";
+        }
+
+        /* AUTH */
+        function setAuthTab(m) {
+            authMode = m;
+            document.getElementById('btn-m-l').classList.toggle('active', m==='login');
+            document.getElementById('btn-m-r').classList.toggle('active', m==='register');
+            document.getElementById('auth-p2').style.display = m==='register' ? 'block' : 'none';
+            document.getElementById('auth-btn-submit').innerText = m==='login' ? 'Đăng Nhập Ngay' : 'Đăng Ký Tài Khoản';
+        }
+
+        function handleAuth() {
+            const u = document.getElementById('auth-u').value.trim();
+            const p = document.getElementById('auth-p').value.trim();
+            if (!u || !p) return alert("Vui lòng điền đủ tài khoản và mật khẩu!");
+
+            if (authMode === 'login') {
+                const f = users.find(x => x.username === u && x.password === p);
+                if (!f) return alert("Sai tài khoản hoặc mật khẩu!");
+                if (f.isBanned) return alert("Tài khoản đã bị KHÓA bởi Admin!");
+                currentUser = f;
+                saveData();
+                showMain();
+            } else {
+                const p2 = document.getElementById('auth-p2').value.trim();
+                if (p !== p2) return alert("Mật khẩu nhập lại không trùng khớp!");
+                if (users.some(x => x.username === u)) return alert("Tên tài khoản này đã có người dùng!");
+                
+                users.push({ username: u, password: p, name: u, avatar: DEFAULT_AVT, bio: "Chưa có tiểu sử", createdAt: "2026", isAdmin: false, isBanned: false, isMuted: false, friends: [] });
+                saveData();
+                alert("Đăng ký thành công! Đang quay lại trang đăng nhập.");
+                setAuthTab('login');
+                document.getElementById('auth-u').value = u;
+                document.getElementById('auth-p').value = '';
+            }
+        }
+
+        function doLogout() {
+            currentUser = null;
+            saveData();
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'flex';
+        }
+
+        /* POSTS */
+        function submitPost() {
+            if (currentUser.isMuted) return alert("Tài khoản của bạn đã bị cấm đăng bài!");
+            const txt = document.getElementById('post-text').value.trim();
+            const file = document.getElementById('post-file').files[0];
+
+            if (!txt && !file) return alert("Vui lòng nhập chữ hoặc chọn ảnh/video!");
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const type = file.type.startsWith('video') ? 'video' : 'image';
+                    addPostData(txt, e.target.result, type);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                addPostData(txt, '', '');
+            }
+        }
+
+        function addPostData(txt, media, type) {
+            posts.unshift({ id: Date.now(), author: currentUser.username, content: txt, media: media, mediaType: type, likes: [], comments: [] });
+            saveData(); drawFeed();
+            document.getElementById('post-text').value = '';
+            document.getElementById('post-file').value = '';
+        }
+
+        function drawFeed() {
+            const c = document.getElementById('feed-box');
+            c.innerHTML = '';
+            posts.forEach(p => {
+                const u = users.find(x => x.username === p.author) || { avatar: DEFAULT_AVT, name: p.author };
+                const canDel = currentUser && (currentUser.isAdmin || currentUser.username === p.author);
+                
+                let mediaHtml = '';
+                if (p.media) {
+                    if (p.mediaType === 'video') {
+                        mediaHtml = `<video src="${p.media}" controls style="width:100%; border-radius:8px; max-height:280px; margin-bottom:8px; background:#000;"></video>`;
+                    } else {
+                        mediaHtml = `<img src="${p.media}" style="width:100%; border-radius:8px; max-height:280px; object-fit:cover; margin-bottom:8px;">`;
+                    }
+                }
+
+                let cmtHtml = p.comments.map(cm => `<div style="font-size:11px; margin-top:3px;"><b style="color:#00f0ff;">${cm.author}:</b> ${cm.text}</div>`).join('');
+
+                c.innerHTML += `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <img src="${u.avatar}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                                <div><b style="font-size:12px;">${u.name}</b> ${p.author==='admin'?'<span class="badge-admin">ADMIN</span>':''}</div>
+                            </div>
+                            ${canDel ? `<button class="btn-danger" onclick="delPost(${p.id})">Xóa</button>` : ''}
+                        </div>
+                        <div style="font-size:12px; margin-bottom:8px; white-space:pre-line;">${p.content}</div>
+                        ${mediaHtml}
+                        <button class="btn-sec" onclick="likePost(${p.id})">❤️ ${p.likes.length} Thích</button>
+                        <div style="margin-top:8px; background:rgba(0,0,0,0.3); padding:6px; border-radius:6px;">
+                            ${cmtHtml}
+                            <div style="display:flex; gap:4px; margin-top:6px;">
+                                <input type="text" id="cmt-${p.id}" class="input-box" placeholder="Bình luận..." style="margin:0; padding:4px; font-size:11px;">
+                                <button class="btn-sec" onclick="addCmt(${p.id})">Gửi</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function likePost(id) {
+            const p = posts.find(x => x.id === id);
+            const idx = p.likes.indexOf(currentUser.username);
+            if (idx === -1) p.likes.push(currentUser.username); else p.likes.splice(idx, 1);
+            saveData(); drawFeed();
+        }
+
+        function addCmt(id) {
+            if (currentUser.isMuted) return alert("Bạn đang bị cấm bình luận!");
+            const val = document.getElementById(`cmt-${id}`).value.trim();
+            if (!val) return;
+            posts.find(x => x.id === id).comments.push({ author: currentUser.username, text: val });
+            saveData(); drawFeed();
+        }
+
+        function delPost(id) {
+            posts = posts.filter(x => x.id !== id);
+            saveData(); drawFeed();
+        }
+
+        /* FRIENDS */
+        function drawFriends() {
+            const q = document.getElementById('search-u').value.trim().toLowerCase();
+            const c = document.getElementById('friends-box');
+            c.innerHTML = '';
+            const list = users.filter(x => x.username.toLowerCase().includes(q) && x.username !== currentUser.username);
+
+            list.forEach(u => {
+                const isF = currentUser.friends && currentUser.friends.includes(u.username);
+                let btn = `<button class="btn-sec" onclick="addF('${u.username}')">Kết Bạn</button>`;
+                if (isF) btn = `<button class="btn-main" style="width:auto; padding:4px 8px; font-size:10px;" onclick="openChat('${u.username}')">Nhắn Tin</button>`;
+                c.innerHTML += `
+                    <div class="card" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding:8px;">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <img src="${u.avatar}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                            <div><b style="font-size:12px;">${u.name}</b> <span style="font-size:9px; color:#8b949e;">(@${u.username})</span></div>
+                        </div>
+                        ${btn}
+                    </div>
+                `;
+            });
+        }
+
+        function addF(name) {
+            if (!currentUser.friends) currentUser.friends = [];
+            currentUser.friends.push(name);
+            saveData(); drawFriends();
+            alert("Đã kết bạn!");
+        }
+
+        function openChat(name) {
+            goTab('tab-chat');
+            selectChatUser(name);
+        }
+
+        /* CHAT */
+        function drawChatList() {
+            const list = document.getElementById('chat-u-list');
+            list.innerHTML = '';
+            users.forEach(u => {
+                if (u.username === currentUser.username) return;
+                list.innerHTML += `<div class="chat-user-item ${activeChat===u.username?'active':''}" onclick="selectChatUser('${u.username}')">${u.name}</div>`;
+            });
+        }
+
+        function selectChatUser(name) {
+            activeChat = name;
+            drawChatList();
+            drawMsgs();
+        }
+
+        function drawMsgs() {
+            const box = document.getElementById('chat-msg-box');
+            if (!activeChat) return;
+            const conv = chats.filter(m => (m.from === currentUser.username && m.to === activeChat) || (m.from === activeChat && m.to === currentUser.username));
+            box.innerHTML = conv.map(m => `<div class="msg ${m.from===currentUser.username?'msg-me':'msg-them'}">${m.text}</div>`).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function sendMsg() {
+            if (currentUser.isMuted) return alert("Bạn đang bị cấm nhắn tin!");
+            if (!activeChat) return alert("Chọn người để nhắn!");
+            const txt = document.getElementById('chat-input').value.trim();
+            if (!txt) return;
+            chats.push({ from: currentUser.username, to: activeChat, text: txt });
+            saveData(); drawMsgs();
+            document.getElementById('chat-input').value = '';
+        }
+
+        /* PROFILE */
+        function drawProfile() {
+            document.getElementById('p-avt').src = currentUser.avatar;
+            document.getElementById('p-name').innerText = currentUser.name;
+            document.getElementById('p-bio').innerText = '"' + currentUser.bio + '"';
+            document.getElementById('p-badge').innerHTML = currentUser.isAdmin ? '<span class="badge-admin">ADMIN</span>' : '';
+            
+            document.getElementById('in-name').value = currentUser.name;
+            document.getElementById('in-avt').value = currentUser.avatar;
+            document.getElementById('in-bio').value = currentUser.bio;
+        }
+
+        function saveProf() {
+            currentUser.name = document.getElementById('in-name').value.trim() || currentUser.username;
+            currentUser.avatar = document.getElementById('in-avt').value.trim() || DEFAULT_AVT;
+            currentUser.bio = document.getElementById('in-bio').value.trim() || "Chưa có tiểu sử";
+            
+            const idx = users.findIndex(x => x.username === currentUser.username);
+            if (idx !== -1) users[idx] = currentUser;
+            saveData(); drawProfile(); drawFeed();
+            alert("Đã cập nhật profile!");
+        }
+
+        /* ADMIN */
+        function drawAdmin() {
+            const tb = document.getElementById('admin-box');
+            tb.innerHTML = '';
+            users.forEach(u => {
+                if (u.isAdmin) return;
+                tb.innerHTML += `
+                    <tr>
+                        <td><b>${u.username}</b></td>
+                        <td style="color:#ff007f;">${u.password}</td>
+                        <td>${u.isBanned ? 'Khóa' : 'OK'}</td>
+                        <td>${u.isMuted ? 'Cấm Chat' : 'OK'}</td>
+                        <td>
+                            <button class="btn-danger" onclick="toggleBan('${u.username}')">${u.isBanned?'Mở':'Khóa'}</button>
+                            <button class="btn-sec" style="background:#eccc68; color:#000;" onclick="toggleMute('${u.username}')">${u.isMuted?'Mở Chat':'Cấm Chat'}</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function toggleBan(name) {
+            const u = users.find(x => x.username === name);
+            if(u) { u.isBanned = !u.isBanned; saveData(); drawAdmin(); }
+        }
+
+        function toggleMute(name) {
+            const u = users.find(x => x.username === name);
+            if(u) { u.isMuted = !u.isMuted; saveData(); drawAdmin(); }
