@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <!-- Tối ưu hóa viewport cho Mobile App: Chặn zoom khi focus input, căn chỉnh tỷ lệ chuẩn 1:1 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Mét Sen Gơ Vip Pờ Rồ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f6ff',
+                            100: '#e0edff',
+                            500: '#0084ff',
+                            600: '#0072e5',
+                            700: '#005bb5',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Tối ưu thanh cuộn mượt mà */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.7);
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .dark .glass {
+            background: rgba(17, 24, 39, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        
+        .message-bubble-in {
+            animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .reaction-pop {
+            animation: pop 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .record-pulse {
+            animation: pulse-red 1.2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .audio-wave {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            height: 18px;
+        }
+        .audio-wave span {
+            width: 3px;
+            background-color: currentColor;
+            border-radius: 9999px;
+            animation: soundWave 1.2s ease-in-out infinite;
+        }
+        .audio-wave span:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+        .audio-wave span:nth-child(2) { height: 14px; animation-delay: 0.2s; }
+        .audio-wave span:nth-child(3) { height: 18px; animation-delay: 0.3s; }
+        .audio-wave span:nth-child(4) { height: 10px; animation-delay: 0.4s; }
+        .audio-wave span:nth-child(5) { height: 16px; animation-delay: 0.2s; }
+        .audio-wave span:nth-child(6) { height: 8px; animation-delay: 0.1s; }
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Chống highlight xanh trên Mobile khi tap */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Cấu trúc Fix Mobile Height (Safe Area) */
+        html, body {
+            height: 100%;
+            height: -webkit-fill-available;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans h-full flex flex-col antialiased">
+
+    <div id="toast" class="fixed top-5 right-5 left-5 sm:left-auto z-[100] transform -translate-y-36 opacity-0 pointer-events-none transition-all duration-300 ease-in-out bg-gray-900/95 dark:bg-gray-800/95 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-gray-700 sm:max-w-sm">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-blue-400 text-xl shrink-0"></i>
+        <span id="toast-msg" class="text-sm font-medium flex-1">Thông báo hệ thống</span>
+    </div>
+
+    <!-- App Header (Dùng chung) -->
+    <header class="h-14 sm:h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-3 sm:px-6 z-20 shrink-0 shadow-sm sm:shadow-none">
+        <div class="flex items-center gap-2.5 sm:gap-3">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 shrink-0">
+                <i class="fa-solid fa-paper-plane text-base sm:text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-sm sm:text-lg leading-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Mét Sen Gơ VIP</h1>
+                <p id="header-user-status" class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">Chưa đăng nhập</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1 sm:gap-2">
+            <!-- Navigation Tabs (Chỉ hiện trên PC/Tablet) -->
+            <div id="main-nav" class="hidden sm:flex items-center gap-1 bg-gray-100 dark:bg-gray-700/60 p-1 rounded-2xl">
+                <button onclick="switchTab('chat')" id="nav-chat" class="px-3 py-1.5 rounded-xl text-sm font-semibold transition-all bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-comments"></i> Tin nhắn
+                </button>
+                <button onclick="switchTab('feed')" id="nav-feed" class="px-3 py-1.5 rounded-xl text-sm font-semibold transition-all text-gray-600 dark:text-gray-300 hover:text-blue-600 flex items-center gap-1.5">
+                    <i class="fa-solid fa-newspaper"></i> Bảng tin
+                </button>
+                <button onclick="switchTab('friends')" id="nav-friends" class="px-3 py-1.5 rounded-xl text-sm font-semibold transition-all text-gray-600 dark:text-gray-300 hover:text-blue-600 relative flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-group"></i> Bạn bè
+                    <span id="friend-req-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+
+            <!-- Theme Toggle -->
+            <button onclick="toggleDarkMode()" class="p-2 sm:p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors" title="Đổi giao diện">
+                <i id="theme-icon" class="fa-solid fa-moon text-base sm:text-lg"></i>
+            </button>
+
+            <!-- Admin Shield Trigger -->
+            <button onclick="openAdminModal()" class="p-2 sm:p-2.5 rounded-full hover:bg-red-50 dark:hover:bg-red-950/30 text-red-500 transition-colors" title="Quản trị viên">
+                <i class="fa-solid fa-shield-halved text-base sm:text-lg"></i>
+            </button>
+
+            <!-- Current User Avatar Profile Trigger -->
+            <div id="header-profile-btn" class="hidden items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 border-l border-gray-200 dark:border-gray-700">
+                <img id="header-avatar" onclick="openProfileModal(currentUser.id)" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover cursor-pointer ring-2 ring-blue-500 hover:opacity-90 transition-opacity" src="" alt="Avatar">
+                <button onclick="logout()" class="p-1.5 sm:p-2 text-gray-500 hover:text-red-500 transition-colors" title="Đăng xuất">
+                    <i class="fa-solid fa-right-from-bracket text-sm sm:text-base"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="auth-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-y-auto">
+        <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+            <!-- Decorative blur -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full pointer-events-none"></div>
+            
+            <!-- Tabs Toggle -->
+            <div class="flex bg-gray-100 dark:bg-gray-700/60 p-1.5 rounded-2xl mb-6 relative z-10">
+                <button type="button" id="tab-login-btn" onclick="showAuthTab('login')" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm">Đăng Nhập</button>
+                <button type="button" id="tab-register-btn" onclick="showAuthTab('register')" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all text-gray-500 dark:text-gray-400">Đăng Ký VIP</button>
+            </div>
+
+            <div id="auth-alert-box" class="hidden mb-4 p-3.5 rounded-2xl text-xs font-semibold flex items-center gap-2.5 border transition-all relative z-10">
+                <i id="auth-alert-icon" class="fa-solid fa-circle-exclamation text-base shrink-0"></i>
+                <span id="auth-alert-text" class="flex-1 leading-relaxed"></span>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="form-login" class="space-y-4 relative z-10" novalidate>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Tài khoản (Username hoặc @CustomID)</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="login-username" required autocomplete="username" class="w-full pl-10 pr-4 py-3.5 sm:py-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Ví dụ: admin">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Mật khẩu</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" id="login-password" required autocomplete="current-password" class="w-full pl-10 pr-10 py-3.5 sm:py-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye-icon')" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2">
+                            <i id="login-eye-icon" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <input type="checkbox" id="remember-me" checked class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4">
+                        Ghi nhớ đăng nhập
+                    </label>
+                    <button type="button" class="text-blue-500 font-medium hover:underline cursor-pointer" onclick="resetBrokenAuthStorage()">Khôi phục DB?</button>
+                </div>
+                <button type="submit" id="btn-submit-login" class="w-full py-3.5 mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl hover:opacity-95 active:scale-[0.98] transition shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Vào Không Gian VIP</span>
+                </button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="form-register" class="space-y-4 hidden relative z-10" novalidate>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Tên hiển thị (Họ và Tên)</label>
+                    <input type="text" id="reg-fullname" required class="w-full px-4 py-3.5 sm:py-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="VD: Lê Hữu B">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Mã Custom ID (Định danh duy nhất)</label>
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">@</span>
+                        <input type="text" id="reg-customid" required class="w-full pl-8 pr-4 py-3.5 sm:py-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="vippro99">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Mật khẩu</label>
+                    <div class="relative">
+                        <input type="password" id="reg-password" required class="w-full px-4 pr-10 py-3.5 sm:py-3 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Tối thiểu 4 ký tự">
+                        <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye-icon')" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2">
+                            <i id="reg-eye-icon" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Ảnh đại diện (Tùy chọn)</label>
+                    <input type="file" id="reg-avatar-file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 dark:file:bg-gray-700 dark:file:text-gray-200 hover:file:bg-blue-100">
+                </div>
+                <button type="submit" id="btn-submit-register" class="w-full py-3.5 mt-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-2xl hover:opacity-95 active:scale-[0.98] transition shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Tạo Tài Khoản Mới</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-app" class="hidden flex-1 flex-col overflow-hidden bg-white dark:bg-gray-900">
+        
+        <!-- Khung chứa các Tab (Kéo dài toàn phần diện tích trống) -->
+        <div class="flex-1 overflow-hidden relative flex flex-col sm:flex-row">
+            
+            <!-- ================= TAB 1: CHAT ================= -->
+            <div id="tab-chat" class="w-full h-full flex overflow-hidden">
+                <!-- Sidebar: Danh sách chat -->
+                <aside id="chat-sidebar" class="w-full sm:w-80 md:w-96 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col shrink-0 transition-transform duration-300 z-10">
+                    <div class="p-3 sm:p-3.5 border-b border-gray-100 dark:border-gray-700 flex items-center gap-2">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="chat-search" oninput="renderConversationList()" placeholder="Tìm bạn bè, nhóm..." class="w-full pl-9 pr-3 py-2.5 bg-gray-100 dark:bg-gray-700 rounded-xl text-sm focus:outline-none">
+                        </div>
+                        <button onclick="openCreateGroupModal()" class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-100 transition shrink-0" title="Tạo nhóm mới">
+                            <i class="fa-solid fa-users-viewfinder"></i>
+                        </button>
+                    </div>
+
+                    <div id="conversation-list" class="flex-1 overflow-y-auto pb-4 divide-y divide-gray-100 dark:divide-gray-700/40">
+                        <!-- Render danh sách chat -->
+                    </div>
+                </aside>
+
+                <!-- Cửa sổ Chat Active -->
+                <main id="chat-window" class="hidden sm:flex flex-1 flex-col bg-gray-50 dark:bg-gray-900 relative z-20 w-full h-full absolute sm:relative top-0 left-0">
+                    <!-- Chat Header -->
+                    <div id="chat-header-bar" class="h-14 sm:h-16 px-3 sm:px-4 bg-white/90 dark:bg-gray-800/90 glass border-b border-gray-200 dark:border-gray-700 flex items-center justify-between shrink-0">
+                        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                            <!-- Nút Back (Chỉ hiện trên Mobile) -->
+                            <button onclick="closeMobileChat()" class="sm:hidden p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full shrink-0">
+                                <i class="fa-solid fa-chevron-left text-lg"></i>
+                            </button>
+                            
+                            <div class="relative cursor-pointer shrink-0" onclick="handleActiveTargetClick()">
+                                <img id="active-chat-avatar" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-blue-500/30" src="" alt="">
+                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                            </div>
+                            <div class="min-w-0 cursor-pointer" onclick="handleActiveTargetClick()">
+                                <h2 id="active-chat-name" class="font-bold text-sm sm:text-base leading-tight truncate">Đang tải...</h2>
+                                <p id="active-chat-sub" class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 truncate">Nhấn để xem hồ sơ</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
+                            <button onclick="initiateCall('audio')" class="w-9 h-9 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center text-blue-600 dark:text-blue-400" title="Gọi thoại">
+                                <i class="fa-solid fa-phone"></i>
+                            </button>
+                            <button onclick="initiateCall('video')" class="w-9 h-9 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center text-indigo-600 dark:text-indigo-400" title="Gọi video">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Khung Tin Nhắn -->
+                    <div id="messages-container" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
+                        <!-- Tin nhắn tiêm vào đây -->
+                    </div>
+
+                    <!-- Muted Banner -->
+                    <div id="muted-banner" class="hidden px-4 py-2 bg-red-500/10 border-t border-red-500/20 text-red-600 dark:text-red-400 text-xs text-center font-semibold">
+                        <i class="fa-solid fa-ban mr-1.5"></i> Admin đã cấm bạn gửi tin nhắn!
+                    </div>
+
+                    <!-- Voice Record Bar -->
+                    <div id="recording-bar" class="hidden px-3 sm:px-4 py-2.5 bg-red-50 dark:bg-red-950/40 border-t border-red-200 dark:border-red-800 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-3 h-3 rounded-full bg-red-600 record-pulse"></div>
+                            <span class="text-xs font-bold text-red-600 dark:text-red-400">Đang thu âm... <span id="record-timer">00:00</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="cancelAudioRecording()" class="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-xs rounded-xl font-semibold hover:bg-gray-300">
+                                Hủy
+                            </button>
+                            <button onclick="stopAndSendAudioRecording()" class="px-3 py-1.5 bg-red-600 text-xs rounded-xl text-white font-bold hover:bg-red-700 flex items-center gap-1 shadow">
+                                <i class="fa-solid fa-paper-plane"></i> Gửi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Input Chat Bar -->
+                    <div id="chat-input-wrapper" class="p-2 sm:p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shrink-0 pb-safe">
+                        <form onsubmit="handleSendMessage(event)" class="flex items-center gap-1.5 sm:gap-2">
+                            <label class="w-10 h-10 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-blue-600 cursor-pointer shrink-0" title="Gửi ảnh">
+                                <i class="fa-solid fa-image text-sm"></i>
+                                <input type="file" id="chat-file-img" accept="image/*" class="hidden" onchange="handleSendChatMedia(event)">
+                            </label>
+
+                            <button type="button" id="record-btn" onclick="startAudioRecording()" class="w-10 h-10 rounded-2xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-red-500 cursor-pointer shrink-0" title="Ghi âm">
+                                <i class="fa-solid fa-microphone text-sm"></i>
+                            </button>
+
+                            <div class="hidden sm:flex items-center gap-1 text-gray-500 shrink-0">
+                                <button type="button" onclick="insertEmoji('❤️')" class="p-1.5 hover:scale-125 transition text-base">❤️</button>
+                                <button type="button" onclick="insertEmoji('🔥')" class="p-1.5 hover:scale-125 transition text-base">🔥</button>
+                            </div>
+
+                            <input type="text" id="chat-input" placeholder="Nhắn tin..." autocomplete="off" class="flex-1 h-10 px-4 rounded-2xl bg-gray-100 dark:bg-gray-700/60 border-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+
+                            <button type="submit" class="w-10 h-10 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-md shadow-blue-500/30 shrink-0">
+                                <i class="fa-solid fa-paper-plane text-sm"></i>
+                            </button>
+                        </form>
+                    </div>
+                </main>
+            </div>
+
+            <!-- ================= TAB 2: FEED ================= -->
+            <div id="tab-feed" class="hidden w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-900 py-4 sm:py-6 px-3 sm:px-4">
+                <div class="max-w-xl mx-auto space-y-6 pb-20 sm:pb-6">
+                    <!-- Khung Đăng Bài -->
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="flex gap-3">
+                            <img id="feed-my-avatar" class="w-10 h-10 rounded-full object-cover shrink-0 cursor-pointer" onclick="openProfileModal(currentUser.id)" src="" alt="">
+                            <div class="flex-1 min-w-0">
+                                <textarea id="feed-post-text" rows="2" placeholder="Chia sẻ cảm nghĩ, ảnh hoặc video hôm nay..." class="w-full bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none border border-gray-200 dark:border-gray-600"></textarea>
+                                
+                                <div id="post-media-preview" class="hidden relative mt-2 rounded-2xl overflow-hidden max-h-60 border border-gray-200 dark:border-gray-700">
+                                    <button onclick="clearPostMedia()" class="absolute top-2 right-2 z-10 w-8 h-8 bg-black/70 text-white rounded-full flex items-center justify-center text-sm hover:bg-black">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                    <img id="post-img-preview" class="hidden w-full h-full object-cover" src="" alt="">
+                                    <video id="post-video-preview" class="hidden w-full h-full object-cover" controls playsinline></video>
+                                </div>
+
+                                <div class="mt-3 flex flex-wrap gap-2 items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                                    <div class="flex items-center gap-2">
+                                        <label class="cursor-pointer text-xs flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold hover:bg-blue-100 transition">
+                                            <i class="fa-solid fa-photo-film text-sm text-green-500"></i> Media
+                                            <input type="file" id="feed-file-input" accept="image/*,video/*" class="hidden" onchange="handlePostMediaSelected(event)">
+                                        </label>
+                                        <select id="feed-privacy-select" class="text-xs bg-gray-100 dark:bg-gray-700 rounded-xl px-2.5 py-2 font-semibold text-gray-700 dark:text-gray-200 focus:outline-none">
+                                            <option value="public">🌍 Công khai</option>
+                                            <option value="friends">👥 Bạn bè</option>
+                                            <option value="private">🔒 Mình tôi</option>
+                                        </select>
+                                    </div>
+                                    <button onclick="handleCreatePost()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-md">
+                                        Đăng bài
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Danh sách Bảng tin -->
+                    <div id="feed-list" class="space-y-4 sm:space-y-6"></div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 3: FRIENDS ================= -->
+            <div id="tab-friends" class="hidden w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-900 py-4 sm:py-6 px-3 sm:px-4">
+                <div class="max-w-2xl mx-auto space-y-4 sm:space-y-6 pb-20 sm:pb-6">
+                    <!-- Thêm bạn -->
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-4 sm:p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <h3 class="font-bold text-sm sm:text-base mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-user-plus text-blue-500"></i> Kết bạn qua ID
+                        </h3>
+                        <div class="flex gap-2">
+                            <div class="relative flex-1">
+                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xs">@</span>
+                                <input type="text" id="friend-search-id" placeholder="Nhập mã Custom ID" class="w-full pl-8 pr-3 py-2.5 rounded-2xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <button onclick="sendFriendRequest()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm rounded-2xl shadow">
+                                Gửi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lời mời -->
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-4 sm:p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <h3 class="font-bold text-sm sm:text-base mb-3 flex items-center justify-between">
+                            <span><i class="fa-solid fa-bell text-orange-500 mr-2"></i>Lời mời kết bạn</span>
+                            <span id="friend-req-count" class="text-xs bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-300 font-bold px-2 py-0.5 rounded-full">0</span>
+                        </h3>
+                        <div id="friend-requests-list" class="space-y-3"></div>
+                    </div>
+
+                    <!-- Bạn bè -->
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-4 sm:p-5 shadow-sm border border-gray-200 dark:border-gray-700">
+                        <h3 class="font-bold text-sm sm:text-base mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-users text-green-500"></i> Danh sách Bạn Bè (<span id="my-friends-count">0</span>)
+                        </h3>
+                        <div id="my-friends-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav id="mobile-bottom-nav" class="sm:hidden h-14 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex items-center justify-around z-30 shrink-0 pb-safe shadow-[0_-2px_10px_rgba(0,0,0,0.05)] dark:shadow-none">
+            <button onclick="switchTab('chat')" id="mob-nav-chat" class="flex flex-col items-center justify-center w-full h-full text-blue-600 dark:text-blue-400">
+                <i class="fa-solid fa-comments text-lg mb-0.5"></i>
+                <span class="text-[10px] font-semibold">Tin nhắn</span>
+            </button>
+            <button onclick="switchTab('feed')" id="mob-nav-feed" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-blue-500">
+                <i class="fa-solid fa-newspaper text-lg mb-0.5"></i>
+                <span class="text-[10px] font-semibold">Bảng tin</span>
+            </button>
+            <button onclick="switchTab('friends')" id="mob-nav-friends" class="flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-blue-500 relative">
+                <div class="relative">
+                    <i class="fa-solid fa-user-group text-lg mb-0.5"></i>
+                    <span id="mob-friend-badge" class="hidden absolute -top-1 -right-2.5 w-3.5 h-3.5 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+                </div>
+                <span class="text-[10px] font-semibold">Bạn bè</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modal Profile (Bảng tin cá nhân) -->
+    <div id="modal-profile" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-4 sm:p-5 relative shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 w-8 h-8 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center z-20">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="overflow-y-auto pr-1 flex-1 pb-4">
+                <div class="h-28 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 relative mb-12 shrink-0">
+                    <div class="absolute -bottom-10 left-4 flex items-end gap-3">
+                        <div class="relative group">
+                            <img id="profile-modal-avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover ring-4 ring-white dark:ring-gray-800 shadow bg-white" src="" alt="Avatar">
+                            <button id="profile-change-avt-btn" onclick="document.getElementById('edit-avatar-input').click()" class="hidden absolute inset-0 bg-black/50 text-white rounded-full flex flex-col items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">
+                                <i class="fa-solid fa-camera"></i>Đổi ảnh
+                            </button>
+                            <input type="file" id="edit-avatar-input" accept="image/*" class="hidden" onchange="handleAvatarFileChange(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-2 mb-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                            <h3 id="profile-modal-name" class="font-bold text-lg sm:text-xl leading-tight">Họ Tên</h3>
+                            <p id="profile-modal-tag" class="text-xs font-semibold text-blue-500">@customid</p>
+                        </div>
+                        <div id="profile-action-btns" class="flex gap-2"></div>
+                    </div>
+                    <div class="mt-3 p-3 bg-gray-50 dark:bg-gray-700/40 rounded-2xl text-xs space-y-1.5 border border-gray-100 dark:border-gray-700">
+                        <p id="profile-modal-bio" class="text-gray-700 dark:text-gray-200 italic">"Chưa cập nhật tiểu sử"</p>
+                        <div id="profile-modal-link-wrapper" class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-semibold break-all mt-1">
+                            <i class="fa-solid fa-link text-xs"></i>
+                            <a id="profile-modal-link" href="#" target="_blank" class="hover:underline">https://...</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="profile-edit-box" class="hidden px-3 mb-4 p-4 bg-gray-100 dark:bg-gray-700/60 rounded-2xl space-y-3 text-xs">
+                    <h4 class="font-bold text-sm text-gray-800 dark:text-gray-100 flex items-center gap-1.5"><i class="fa-solid fa-pen-to-square text-blue-500"></i> Sửa hồ sơ</h4>
+                    <div>
+                        <label class="block font-semibold mb-1">Tên hiển thị:</label>
+                        <input type="text" id="edit-fullname" class="w-full px-3 py-2 bg-white dark:bg-gray-800 rounded-xl focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Tiểu sử:</label>
+                        <textarea id="edit-bio" rows="2" class="w-full px-3 py-2 bg-white dark:bg-gray-800 rounded-xl focus:outline-none resize-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Link Bio (Website/Mạng xã hội):</label>
+                        <input type="url" id="edit-bio-link" class="w-full px-3 py-2 bg-white dark:bg-gray-800 rounded-xl focus:outline-none">
+                    </div>
+                    <div class="flex justify-end gap-2 pt-1">
+                        <button onclick="toggleEditProfileBox(false)" class="px-3 py-1.5 bg-gray-200 dark:bg-gray-600 rounded-xl font-semibold">Hủy</button>
+                        <button onclick="saveProfileChanges()" class="px-4 py-1.5 bg-blue-600 text-white rounded-xl font-semibold">Lưu</button>
+                    </div>
+                </div>
+
+                <div class="px-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                    <h4 class="font-bold text-sm mb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-images text-indigo-500 mr-1.5"></i>Bài đăng cá nhân</span>
+                        <span id="profile-posts-count" class="text-xs bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300 px-2 py-0.5 rounded-full font-bold">0 bài</span>
+                    </h4>
+                    <div id="profile-wall-posts" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cuộc Gọi (Audio/Video) -->
+    <div id="modal-call" class="fixed inset-0 z-50 bg-gray-950/95 backdrop-blur-lg hidden flex flex-col items-center justify-between p-4 sm:p-10 text-white">
+        <div class="text-center space-y-2 mt-8 sm:mt-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-xs font-semibold">
+                <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span>
+                <span id="call-status-label">Đang kết nối VIP...</span>
+            </div>
+            <h3 id="call-target-name" class="text-xl sm:text-2xl font-bold tracking-tight">Tên người gọi</h3>
+            <p id="call-timer" class="text-sm font-mono text-gray-300">00:00</p>
+        </div>
+
+        <div class="relative w-full max-w-md h-80 sm:h-96 bg-gray-900 rounded-[2rem] overflow-hidden flex items-center justify-center border border-gray-800 shadow-2xl my-auto">
+            <div id="call-audio-visual" class="flex flex-col items-center">
+                <div class="relative">
+                    <img id="call-target-avatar" class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover ring-4 ring-blue-500 animate-pulse" src="" alt="">
+                </div>
+                <div class="mt-6 flex items-center gap-2 text-blue-400">
+                    <div class="audio-wave"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                    <span class="text-xs font-semibold text-gray-300">HD Stereo</span>
+                </div>
+            </div>
+            <div id="call-video-visual" class="hidden absolute inset-0 bg-gray-900">
+                <video id="call-remote-video" class="w-full h-full object-cover" autoplay playsinline muted loop></video>
+                <div class="absolute bottom-4 right-4 w-24 h-36 bg-black/80 rounded-2xl overflow-hidden border-2 border-white/20">
+                    <video id="call-local-video" class="w-full h-full object-cover" autoplay playsinline muted></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-5 sm:gap-6 mb-10 sm:mb-6">
+            <button id="call-btn-mic" onclick="toggleCallMic()" class="w-14 h-14 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-xl transition">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <button id="call-btn-cam" onclick="toggleCallCam()" class="w-14 h-14 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-xl transition">
+                <i class="fa-solid fa-video"></i>
+            </button>
+            <button onclick="endCall()" class="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700 flex items-center justify-center text-2xl shadow-xl transition transform active:scale-90">
+                <i class="fa-solid fa-phone-slash"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Post Modal & Create Group Modal (Thu gọn giao diện) -->
+    <div id="modal-edit-post" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-5 relative shadow-xl">
+            <h3 class="font-bold text-base mb-3"><i class="fa-solid fa-pen text-blue-500 mr-2"></i>Sửa bài viết</h3>
+            <input type="hidden" id="edit-post-id">
+            <textarea id="edit-post-text" rows="3" class="w-full p-3 bg-gray-50 dark:bg-gray-700 rounded-2xl text-sm focus:outline-none mb-3 resize-none"></textarea>
+            <select id="edit-post-privacy" class="w-full text-xs bg-gray-100 dark:bg-gray-700 rounded-xl p-2.5 font-semibold mb-3">
+                <option value="public">Công khai</option><option value="friends">Bạn bè</option><option value="private">Chỉ mình tôi</option>
+            </select>
+            <div class="flex justify-end gap-2">
+                <button onclick="document.getElementById('modal-edit-post').classList.add('hidden')" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-xl text-xs font-semibold">Hủy</button>
+                <button onclick="savePostEdit()" class="px-5 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold">Cập nhật</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-create-group" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-5 relative shadow-xl">
+            <button onclick="document.getElementById('modal-create-group').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-bold text-base mb-4"><i class="fa-solid fa-users text-blue-600 mr-2"></i>Tạo nhóm chat mới</h3>
+            <input type="text" id="group-name-input" placeholder="Tên nhóm chat..." class="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-700 rounded-2xl text-sm focus:outline-none mb-3 border border-gray-200 dark:border-gray-600">
+            <div id="group-members-list" class="max-h-48 overflow-y-auto space-y-1 pr-1 border border-gray-100 dark:border-gray-700 p-2 rounded-2xl mb-4 text-sm"></div>
+            <button onclick="confirmCreateGroup()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-2xl text-sm shadow">Tạo Nhóm</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="modal-admin" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-2xl w-full p-4 sm:p-5 relative border border-red-500/30 shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700 shrink-0">
+                <div class="flex items-center gap-2 text-red-600 font-bold text-base sm:text-lg">
+                    <i class="fa-solid fa-shield-halved text-xl"></i> Quản Trị Hệ Thống
+                </div>
+                <button onclick="document.getElementById('modal-admin').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="admin-auth-guard" class="hidden py-6 text-center">
+                <i class="fa-solid fa-lock text-4xl text-red-500 mb-2"></i>
+                <h4 class="font-bold text-base">Yêu cầu quyền Admin!</h4>
+            </div>
+            <div id="admin-panel-content" class="flex-1 overflow-y-auto py-3 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs bg-red-50 dark:bg-red-950/30 p-3 rounded-2xl border border-red-200 dark:border-red-900/50">
+                    <span class="text-gray-700 dark:text-gray-300">Tính năng: <strong>Khóa (Ban)</strong> hoặc <strong>Cấm Chat (Mute)</strong> thành viên.</span>
+                    <button onclick="clearAllData()" class="px-3 py-1.5 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 whitespace-nowrap">Khôi phục DB (Reset)</button>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+                    <table class="w-full text-left text-xs min-w-[500px]">
+                        <thead class="bg-gray-100 dark:bg-gray-700/60 uppercase font-bold text-gray-500">
+                            <tr><th class="p-3">Thành viên</th><th class="p-3">Trạng thái</th><th class="p-3 text-right">Thao tác Admin</th></tr>
+                        </thead>
+                        <tbody id="admin-user-table" class="divide-y divide-gray-100 dark:divide-gray-700"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= INITIAL DATA & STATE ================= */
+        const STORAGE_KEY_USERS = 'vip_messenger_users_final';
+        const STORAGE_KEY_POSTS = 'vip_messenger_posts_final';
+        const STORAGE_KEY_CHATS = 'vip_messenger_chats_final';
+        const STORAGE_KEY_AUTH = 'vip_messenger_auth_final';
+
+        const DEFAULT_ADMIN = {
+            id: 'admin_1', username: 'admin', password: 'admin123', fullname: 'Quản Trị Viên VIP',
+            customId: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop',
+            bio: 'Hệ thống Quản trị viên Mét Sen Gơ Vip.', bioLink: '', role: 'admin',
+            isBanned: false, isMuted: false, friends: [], friendRequests: []
+        };
+
+        const DEFAULT_USERS = [DEFAULT_ADMIN];
+
+        function safeLoadArray(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(fallback));
+            } catch (err) { return JSON.parse(JSON.stringify(fallback)); }
+        }
+
+        function ensureValidUsersDatabase(userList) {
+            if (!Array.isArray(userList)) userList = [];
+            userList = userList.filter(u => u && typeof u === 'object' && (u.username || u.customId));
+            
+            const adminIdx = userList.findIndex(u => u.username === 'admin' || u.customId === 'admin');
+            if (adminIdx === -1) {
+                userList.unshift(JSON.parse(JSON.stringify(DEFAULT_ADMIN)));
+            } else {
+                userList[adminIdx].username = 'admin';
+                userList[adminIdx].customId = 'admin';
+                userList[adminIdx].password = 'admin123';
+                userList[adminIdx].role = 'admin';
+                userList[adminIdx].isBanned = false;
+            }
+
+            userList.forEach(u => {
+                u.customId = String(u.customId || u.username || '').toLowerCase();
+                u.friends = Array.isArray(u.friends) ? u.friends : [];
+                u.friendRequests = Array.isArray(u.friendRequests) ? u.friendRequests : [];
+            });
+            return userList;
+        }
+
+        let users = ensureValidUsersDatabase(safeLoadArray(STORAGE_KEY_USERS, DEFAULT_USERS));
+        let posts = safeLoadArray(STORAGE_KEY_POSTS, []);
+        let chats = safeLoadArray(STORAGE_KEY_CHATS, []);
+        let currentUser = null;
+        let activeChatTargetId = null;
+        let activeTab = 'chat';
+        let selectedPostMedia = null;
+
+        function saveStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+                localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(posts));
+                localStorage.setItem(STORAGE_KEY_CHATS, JSON.stringify(chats));
+            } catch (e) { console.warn('Storage Error:', e); }
+        }
+        saveStorage();
+
+        /* ================= TOAST & ALERT ================= */
+        let toastTimer = null;
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            const icon = document.getElementById('toast-icon');
+            icon.className = type === 'success' ? 'fa-solid fa-circle-check text-green-400 text-xl shrink-0' : 
+                           type === 'error' ? 'fa-solid fa-circle-exclamation text-red-400 text-xl shrink-0' : 
+                           'fa-solid fa-circle-info text-blue-400 text-xl shrink-0';
+
+            toast.classList.remove('opacity-0', '-translate-y-36', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-36', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function showAuthAlert(msg, type = 'error') {
+            const box = document.getElementById('auth-alert-box');
+            const text = document.getElementById('auth-alert-text');
+            const icon = document.getElementById('auth-alert-icon');
+            if (!msg) { box.classList.add('hidden'); return; }
+            text.innerText = msg;
+            box.className = `mb-4 p-3.5 rounded-2xl text-xs font-semibold flex items-center gap-2.5 border relative z-10 ${
+                type === 'success' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/40' : 'bg-red-50 text-red-600 border-red-200 dark:bg-red-950/40'
+            }`;
+            icon.className = `fa-solid ${type === 'success' ? 'fa-circle-check text-green-500' : 'fa-circle-exclamation text-red-500'} text-base shrink-0`;
+            box.classList.remove('hidden');
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text'; icon.className = 'fa-solid fa-eye-slash text-xs text-blue-500';
+            } else {
+                input.type = 'password'; icon.className = 'fa-solid fa-eye text-xs';
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme_dark', isDark);
+            document.getElementById('theme-icon').className = isDark ? 'fa-solid fa-sun text-base sm:text-lg' : 'fa-solid fa-moon text-base sm:text-lg';
+        }
+        if (localStorage.getItem('theme_dark') === 'true') toggleDarkMode();
+
+        /* ================= AUTHENTICATION ================= */
+        function showAuthTab(tab) {
+            showAuthAlert(null);
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const formLogin = document.getElementById('form-login');
+            const formReg = document.getElementById('form-register');
+
+            if (tab === 'login') {
+                loginBtn.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm';
+                regBtn.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all text-gray-500';
+                formLogin.classList.remove('hidden'); formReg.classList.add('hidden');
+            } else {
+                regBtn.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm';
+                loginBtn.className = 'flex-1 py-2.5 rounded-xl text-sm font-bold transition-all text-gray-500';
+                formReg.classList.remove('hidden'); formLogin.classList.add('hidden');
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            users = ensureValidUsersDatabase(users);
+            const username = document.getElementById('login-username').value.trim().replace(/^@+/, '').toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            if (!username || !password) return showAuthAlert('Vui lòng nhập đầy đủ Tài khoản và Mật khẩu!');
+
+            const user = users.find(u => u.customId === username || u.username === username);
+            if (!user) return showAuthAlert(`Không tìm thấy tài khoản "@${username}".`);
+            if (user.password !== password) return showAuthAlert('Mật khẩu không chính xác!');
+            if (user.isBanned && user.role !== 'admin') return showAuthAlert('Tài khoản đã bị Admin khóa!');
+
+            currentUser = user;
+            if (document.getElementById('remember-me').checked) localStorage.setItem(STORAGE_KEY_AUTH, user.id);
+            onUserLoggedIn();
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            users = ensureValidUsersDatabase(users);
+            const fullname = document.getElementById('reg-fullname').value.trim();
+            const customId = document.getElementById('reg-customid').value.trim().replace(/^@+/, '').replace(/\s+/g, '').toLowerCase();
+            const password = document.getElementById('reg-password').value;
+            const avatarFile = document.getElementById('reg-avatar-file').files[0];
+
+            if (customId.length < 3) return showAuthAlert('Custom ID tối thiểu 3 ký tự!');
+            if (password.length < 4) return showAuthAlert('Mật khẩu tối thiểu 4 ký tự!');
+            if (users.some(u => u.customId === customId)) return showAuthAlert(`Custom ID "@${customId}" đã tồn tại!`);
+
+            const completeReg = (avatarUrl) => {
+                const newUser = {
+                    id: 'usr_' + Date.now(), username: customId, password: password, fullname: fullname, customId: customId,
+                    avatar: avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${customId}`, bio: '', bioLink: '', role: 'user',
+                    isBanned: false, isMuted: false, friends: [], friendRequests: []
+                };
+                users.push(newUser); saveStorage(); currentUser = newUser;
+                localStorage.setItem(STORAGE_KEY_AUTH, newUser.id);
+                onUserLoggedIn(); showToast('Đăng ký thành công!', 'success');
+            };
+
+            if (avatarFile) {
+                const reader = new FileReader();
+                reader.onload = e => completeReg(e.target.result);
+                reader.readAsDataURL(avatarFile);
+            } else completeReg(null);
+        }
+
+        function resetBrokenAuthStorage() {
+            localStorage.removeItem(STORAGE_KEY_USERS);
+            users = ensureValidUsersDatabase(DEFAULT_USERS);
+            saveStorage(); showAuthAlert('Khôi phục cơ sở dữ liệu gốc thành công!', 'success');
+        }
+
+        function onUserLoggedIn() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('flex'); // Kích hoạt flex cho main app
+            document.getElementById('main-nav').classList.remove('hidden');
+            document.getElementById('header-profile-btn').classList.remove('hidden');
+            document.getElementById('header-profile-btn').classList.add('flex');
+            
+            // Show bottom nav on mobile
+            document.getElementById('mobile-bottom-nav').classList.remove('hidden');
+            document.getElementById('mobile-bottom-nav').classList.add('flex');
+
+            document.getElementById('header-user-status').innerText = `${currentUser.fullname} (@${currentUser.customId})`;
+            document.getElementById('header-avatar').src = currentUser.avatar;
+            document.getElementById('feed-my-avatar').src = currentUser.avatar;
+
+            checkMutedBanner();
+            updateBadge();
+            renderConversationList();
+            renderFeed();
+            renderFriendsTab();
+
+            // Set up mobile chat view gracefully
+            if (!activeChatTargetId) {
+                const partner = users.find(u => u.id !== currentUser.id && !u.isBanned);
+                if (partner) selectConversation(partner.id, true); // initial load flag
+            }
+        }
+
+        function logout() {
+            currentUser = null; activeChatTargetId = null; localStorage.removeItem(STORAGE_KEY_AUTH);
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('flex');
+            document.getElementById('main-nav').classList.add('hidden');
+            document.getElementById('header-profile-btn').classList.add('hidden');
+            document.getElementById('mobile-bottom-nav').classList.add('hidden');
+            document.getElementById('header-user-status').innerText = 'Chưa đăng nhập';
+            showToast('Đã đăng xuất an toàn.', 'info');
+        }
+
+        /* ================= TABS & MOBILE NAV ================= */
+        function switchTab(tab) {
+            activeTab = tab;
+            ['chat', 'feed', 'friends'].forEach(t => {
+                const tabEl = document.getElementById(`tab-${t}`);
+                const navBtn = document.getElementById(`nav-${t}`);
+                const mobBtn = document.getElementById(`mob-nav-${t}`);
+                
+                if (t === tab) {
+                    tabEl.classList.remove('hidden'); 
+                    if(t === 'chat') tabEl.classList.add('flex'); // Giữ flex cho chat
+                    if(navBtn) navBtn.className = 'px-3 py-1.5 rounded-xl text-sm font-semibold transition-all bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm flex items-center gap-1.5';
+                    if(mobBtn) mobBtn.className = 'flex flex-col items-center justify-center w-full h-full text-blue-600 dark:text-blue-400';
+                } else {
+                    tabEl.classList.add('hidden');
+                    if(t === 'chat') tabEl.classList.remove('flex');
+                    if(navBtn) navBtn.className = 'px-3 py-1.5 rounded-xl text-sm font-semibold transition-all text-gray-600 dark:text-gray-300 hover:text-blue-600 flex items-center gap-1.5';
+                    if(mobBtn) mobBtn.className = 'flex flex-col items-center justify-center w-full h-full text-gray-500 dark:text-gray-400 hover:text-blue-500';
+                }
+            });
+
+            // Mobile Chat Reset Logic: If switching to Chat tab on Mobile, make sure sidebar is visible if no active chat
+            if (tab === 'chat' && window.innerWidth < 640) {
+                if(!activeChatTargetId) {
+                    document.getElementById('chat-sidebar').classList.remove('hidden');
+                    document.getElementById('chat-window').classList.add('hidden');
+                    document.getElementById('chat-window').classList.remove('flex');
+                } else {
+                    document.getElementById('chat-sidebar').classList.add('hidden');
+                    document.getElementById('chat-window').classList.remove('hidden');
+                    document.getElementById('chat-window').classList.add('flex');
+                }
+            }
+
+            if (tab === 'feed') renderFeed();
+            if (tab === 'friends') renderFriendsTab();
+            if (tab === 'chat') renderConversationList();
+        }
+
+        /* ================= CHAT & MOBILE BEHAVIOR ================= */
+        function renderConversationList() {
+            const listEl = document.getElementById('conversation-list');
+            const query = document.getElementById('chat-search').value.toLowerCase();
+            const myGroups = chats.filter(c => c.isGroup && c.members.includes(currentUser.id));
+            const others = users.filter(u => u.id !== currentUser.id && !u.isBanned);
+
+            let all = [...myGroups.map(g => ({ ...g, preview: g.messages.length ? g.messages[g.messages.length-1] : null })), 
+                       ...others.map(u => {
+                           const th = chats.find(c => !c.isGroup && c.members.includes(currentUser.id) && c.members.includes(u.id));
+                           return { id: u.id, name: u.fullname, avatar: u.avatar, isGroup: false, customId: u.customId, preview: th && th.messages.length ? th.messages[th.messages.length-1] : null };
+                       })];
+            
+            if (query) all = all.filter(c => c.name.toLowerCase().includes(query) || (c.customId && c.customId.toLowerCase().includes(query)));
+
+            listEl.innerHTML = all.length ? all.map(c => `
+                <div onclick="selectConversation('${c.id}')" class="p-3 sm:p-3.5 flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition ${activeChatTargetId === c.id ? 'bg-blue-50/70 dark:bg-gray-700/80 border-l-4 border-blue-600' : ''}">
+                    <div class="relative shrink-0">
+                        <img class="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover ring-2 ring-gray-100 dark:ring-gray-700 bg-white" src="${c.avatar}">
+                        ${!c.isGroup ? `<span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></span>` : ''}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-sm truncate leading-tight">${c.name}</h4>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">${c.preview ? (c.preview.audio ? '🎙️ Ghi âm' : c.preview.image ? '📷 Ảnh' : c.preview.text) : 'Bắt đầu chat'}</p>
+                    </div>
+                </div>
+            `).join('') : `<div class="p-6 text-center text-xs text-gray-400">Không tìm thấy!</div>`;
+        }
+
+        function selectConversation(targetId, isInitialLoad = false) {
+            activeChatTargetId = targetId;
+            const chatWin = document.getElementById('chat-window');
+            const chatSide = document.getElementById('chat-sidebar');
+            
+            // Xử lý Mobile Layout: Ẩn sidebar, trượt window ra
+            chatWin.classList.remove('hidden');
+            chatWin.classList.add('flex');
+            
+            if (window.innerWidth < 640 && !isInitialLoad) {
+                chatSide.classList.add('hidden');
+            } else if (window.innerWidth < 640 && isInitialLoad) {
+                // Trên mobile lúc mới log in, không auto mở chat window che mất sidebar
+                chatWin.classList.add('hidden');
+                chatWin.classList.remove('flex');
+                activeChatTargetId = null;
+            }
+
+            if(activeChatTargetId) {
+                const group = chats.find(c => c.isGroup && c.id === targetId);
+                const user = users.find(u => u.id === targetId);
+                
+                if (group) {
+                    document.getElementById('active-chat-avatar').src = group.avatar;
+                    document.getElementById('active-chat-name').innerText = group.name;
+                    document.getElementById('active-chat-sub').innerText = `${group.members.length} thành viên`;
+                } else if (user) {
+                    document.getElementById('active-chat-avatar').src = user.avatar;
+                    document.getElementById('active-chat-name').innerText = user.fullname;
+                    document.getElementById('active-chat-sub').innerText = `@${user.customId} • Đang hoạt động`;
+                }
+                renderMessages();
+            }
+            renderConversationList();
+        }
+
+        function closeMobileChat() {
+            document.getElementById('chat-window').classList.add('hidden');
+            document.getElementById('chat-window').classList.remove('flex');
+            document.getElementById('chat-sidebar').classList.remove('hidden');
+            activeChatTargetId = null; // Bỏ chọn để render list đẹp
+            renderConversationList();
+        }
+
+        function getActiveChatThread() {
+            if (!activeChatTargetId) return null;
+            let th = chats.find(c => c.isGroup ? c.id === activeChatTargetId : (!c.isGroup && c.members.includes(currentUser.id) && c.members.includes(activeChatTargetId)));
+            if (!th) {
+                th = { id: 'chat_' + Date.now(), isGroup: false, members: [currentUser.id, activeChatTargetId], messages: [] };
+                chats.push(th); saveStorage();
+            }
+            return th;
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('messages-container');
+            const th = getActiveChatThread();
+            if (!th || !th.messages.length) {
+                container.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-gray-400 text-xs"><i class="fa-solid fa-comments text-4xl mb-2 text-blue-500 opacity-40"></i>Bắt đầu trò chuyện!</div>`;
+                return;
+            }
+            container.innerHTML = th.messages.map(m => {
+                const isMe = m.senderId === currentUser.id;
+                const sender = users.find(u => u.id === m.senderId) || { fullname: 'User', avatar: 'https://placehold.co/80' };
+                return `
+                    <div class="flex items-end gap-2 ${isMe ? 'justify-end' : 'justify-start'} message-bubble-in group">
+                        ${!isMe ? `<img class="w-7 h-7 rounded-full object-cover shrink-0 cursor-pointer" onclick="openProfileModal('${sender.id}')" src="${sender.avatar}">` : ''}
+                        <div class="max-w-[80%] sm:max-w-md space-y-1">
+                            ${th.isGroup && !isMe ? `<p class="text-[10px] text-gray-400 font-bold ml-1">${sender.fullname}</p>` : ''}
+                            <div class="p-3 rounded-2xl ${isMe ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-bl-none'} relative">
+                                ${m.text ? `<p class="text-sm whitespace-pre-wrap">${escapeHtml(m.text)}</p>` : ''}
+                                ${m.image ? `<img src="${m.image}" class="rounded-xl max-h-52 object-cover mt-1 cursor-pointer" onclick="window.open('${m.image}')">` : ''}
+                                ${m.audio ? `<audio controls src="${m.audio}" class="h-9 w-48 mt-1"></audio>` : ''}
+                                ${m.reactions?.length ? `<div class="absolute -bottom-2 right-2 bg-white dark:bg-gray-700 px-1.5 py-0.5 rounded-full border border-gray-200 dark:border-gray-600 text-xs flex reaction-pop shadow-sm">${m.reactions.map(r=>r.emoji).join('')}</div>` : ''}
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[10px] text-gray-400 ${isMe ? 'justify-end' : 'justify-start'} px-1">
+                                <span>${new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                                <div class="hidden group-hover:flex items-center gap-1"><button onclick="addReaction('${m.id}','❤️')">❤️</button><button onclick="addReaction('${m.id}','😆')">😆</button></div>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleSendMessage(e) {
+            e.preventDefault();
+            if (currentUser.isMuted) return showToast('Admin đã cấm bạn gửi tin nhắn!', 'error');
+            const inp = document.getElementById('chat-input');
+            if (inp.value.trim()) {
+                getActiveChatThread().messages.push({ id: 'msg_'+Date.now(), senderId: currentUser.id, text: inp.value.trim(), timestamp: new Date().toISOString(), reactions: [] });
+                saveStorage(); renderMessages(); renderConversationList();
+                inp.value = '';
+            }
+        }
+
+        function handleSendChatMedia(e) {
+            if (currentUser.isMuted) return;
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => { getActiveChatThread().messages.push({ id: 'msg_'+Date.now(), senderId: currentUser.id, image: ev.target.result, timestamp: new Date().toISOString() }); saveStorage(); renderMessages(); renderConversationList(); };
+            reader.readAsDataURL(file); e.target.value='';
+        }
+
+        function insertEmoji(e) { document.getElementById('chat-input').value += e; document.getElementById('chat-input').focus(); }
+        function addReaction(msgId, e) {
+            const m = getActiveChatThread().messages.find(x => x.id === msgId);
+            if (m) { m.reactions = m.reactions || []; m.reactions.push({userId: currentUser.id, emoji: e}); saveStorage(); renderMessages(); }
+        }
+
+        // --- GHI ÂM (VOICE NOTE) ---
+        let mediaRecorder, audioChunks=[], recordInterval, recordSeconds=0, recordingStream;
+        async function startAudioRecording() {
+            if (currentUser.isMuted) return;
+            document.getElementById('recording-bar').classList.remove('hidden');
+            recordSeconds = 0; document.getElementById('record-timer').innerText = '00:00';
+            recordInterval = setInterval(() => {
+                recordSeconds++; document.getElementById('record-timer').innerText = `${String(Math.floor(recordSeconds/60)).padStart(2,'0')}:${String(recordSeconds%60).padStart(2,'0')}`;
+            }, 1000);
+            try {
+                recordingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(recordingStream);
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.start();
+            } catch (err) { console.warn('No Mic, simulation mode'); }
+        }
+        function cancelAudioRecording() {
+            clearInterval(recordInterval); document.getElementById('recording-bar').classList.add('hidden');
+            if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+            if(recordingStream) recordingStream.getTracks().forEach(t=>t.stop());
+            audioChunks = [];
+        }
+        function stopAndSendAudioRecording() {
+            clearInterval(recordInterval); document.getElementById('recording-bar').classList.add('hidden');
+            if(mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.onstop = () => {
+                    const reader = new FileReader();
+                    reader.onload = e => { getActiveChatThread().messages.push({ id: 'msg_'+Date.now(), senderId: currentUser.id, audio: e.target.result, timestamp: new Date().toISOString() }); saveStorage(); renderMessages(); renderConversationList(); };
+                    reader.readAsDataURL(new Blob(audioChunks, { type: 'audio/webm' }));
+                    if(recordingStream) recordingStream.getTracks().forEach(t=>t.stop());
+                };
+                mediaRecorder.stop();
+            } else {
+                getActiveChatThread().messages.push({ id: 'msg_'+Date.now(), senderId: currentUser.id, text: `🎙️ Tin nhắn thoại (${document.getElementById('record-timer').innerText})`, timestamp: new Date().toISOString() });
+                saveStorage(); renderMessages(); renderConversationList();
+            }
+        }
+
+        /* ================= PROFILE, WALL & FEED ================= */
+        let inspectingUserId = null;
+        function openProfileModal(uid) {
+            inspectingUserId = uid;
+            const u = users.find(x => x.id === uid);
+            if(!u) return;
+            document.getElementById('profile-modal-avatar').src = u.avatar;
+            document.getElementById('profile-modal-name').innerText = u.fullname;
+            document.getElementById('profile-modal-tag').innerText = `@${u.customId}` + (u.role==='admin'?' • Admin VIP':'');
+            document.getElementById('profile-modal-bio').innerText = u.bio || 'Chưa cập nhật tiểu sử.';
+            if(u.bioLink) {
+                document.getElementById('profile-modal-link').href = u.bioLink.startsWith('http')?u.bioLink:`https://${u.bioLink}`;
+                document.getElementById('profile-modal-link').innerText = u.bioLink;
+                document.getElementById('profile-modal-link-wrapper').classList.remove('hidden');
+            } else document.getElementById('profile-modal-link-wrapper').classList.add('hidden');
+
+            const act = document.getElementById('profile-action-btns');
+            if(u.id === currentUser.id) {
+                document.getElementById('profile-change-avt-btn').classList.remove('hidden');
+                act.innerHTML = `<button onclick="toggleEditProfileBox(true)" class="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded-xl"><i class="fa-solid fa-pen"></i> Sửa</button>`;
+            } else {
+                document.getElementById('profile-change-avt-btn').classList.add('hidden');
+                act.innerHTML = `<button onclick="closeProfileModal(); switchTab('chat'); selectConversation('${u.id}');" class="px-3.5 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-xl shadow"><i class="fa-solid fa-paper-plane"></i> Nhắn tin</button>`;
+            }
+            toggleEditProfileBox(false);
+            
+            const wall = posts.filter(p => p.authorId === uid);
+            document.getElementById('profile-posts-count').innerText = `${wall.length} bài`;
+            document.getElementById('profile-wall-posts').innerHTML = wall.length ? wall.map(p=>generatePostHTML(p)).join('') : `<p class="text-xs text-gray-400 py-4 text-center">Chưa có bài đăng.</p>`;
+            document.getElementById('modal-profile').classList.remove('hidden');
+        }
+        function closeProfileModal() { document.getElementById('modal-profile').classList.add('hidden'); }
+        function toggleEditProfileBox(show) {
+            const b = document.getElementById('profile-edit-box');
+            if(show){ document.getElementById('edit-fullname').value=currentUser.fullname; document.getElementById('edit-bio').value=currentUser.bio||''; document.getElementById('edit-bio-link').value=currentUser.bioLink||''; b.classList.remove('hidden'); }
+            else b.classList.add('hidden');
+        }
+        function saveProfileChanges() {
+            currentUser.fullname = document.getElementById('edit-fullname').value.trim();
+            currentUser.bio = document.getElementById('edit-bio').value.trim();
+            currentUser.bioLink = document.getElementById('edit-bio-link').value.trim();
+            saveStorage(); showToast('Đã lưu hồ sơ!', 'success'); openProfileModal(currentUser.id);
+        }
+        function handleAvatarFileChange(e) {
+            const f = e.target.files[0]; if(!f) return;
+            const r = new FileReader(); r.onload = ev => { currentUser.avatar = ev.target.result; saveStorage(); document.getElementById('header-avatar').src=ev.target.result; openProfileModal(currentUser.id); renderConversationList(); }; r.readAsDataURL(f);
+        }
+
+        function handlePostMediaSelected(e) {
+            const f = e.target.files[0]; if(!f) return;
+            const isVid = f.type.startsWith('video');
+            const r = new FileReader(); r.onload = ev => {
+                selectedPostMedia = { type: isVid?'video':'image', data: ev.target.result };
+                document.getElementById('post-media-preview').classList.remove('hidden');
+                if(isVid){ document.getElementById('post-img-preview').classList.add('hidden'); document.getElementById('post-video-preview').src=ev.target.result; document.getElementById('post-video-preview').classList.remove('hidden'); }
+                else { document.getElementById('post-video-preview').classList.add('hidden'); document.getElementById('post-img-preview').src=ev.target.result; document.getElementById('post-img-preview').classList.remove('hidden'); }
+            }; r.readAsDataURL(f);
+        }
+        function clearPostMedia() { selectedPostMedia=null; document.getElementById('feed-file-input').value=''; document.getElementById('post-media-preview').classList.add('hidden'); }
+        function handleCreatePost() {
+            const txt = document.getElementById('feed-post-text').value.trim();
+            if(!txt && !selectedPostMedia) return showToast('Nhập nội dung hoặc ảnh!', 'error');
+            posts.unshift({ id: 'post_'+Date.now(), authorId: currentUser.id, content: txt, media: selectedPostMedia, privacy: document.getElementById('feed-privacy-select').value, likes: [], comments: [], createdAt: new Date().toISOString() });
+            saveStorage(); document.getElementById('feed-post-text').value=''; clearPostMedia(); renderFeed(); showToast('Đã đăng!', 'success');
+        }
+
+        function renderFeed() {
+            const c = document.getElementById('feed-list');
+            const vis = posts.filter(p => p.authorId === currentUser.id || p.privacy === 'public' || (p.privacy === 'friends' && users.find(u=>u.id===p.authorId)?.friends.includes(currentUser.id)));
+            c.innerHTML = vis.length ? vis.map(p => generatePostHTML(p)).join('') : `<div class="text-center py-10 text-gray-400"><i class="fa-solid fa-newspaper text-3xl mb-2 opacity-40"></i><p class="text-xs">Chưa có bài viết.</p></div>`;
+        }
+        function generatePostHTML(p) {
+            const a = users.find(u=>u.id===p.authorId) || {fullname:'User', avatar:'https://placehold.co/100', customId:'user'};
+            const isLiked = p.likes?.includes(currentUser.id);
+            const isOwner = currentUser.id === p.authorId || currentUser.role === 'admin';
+            const privIcon = p.privacy==='public'?'globe':p.privacy==='friends'?'user-group':'lock';
+            return `
+                <div class="bg-white dark:bg-gray-800 rounded-3xl p-4 shadow-sm border border-gray-200 dark:border-gray-700 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2 cursor-pointer" onclick="openProfileModal('${a.id}')">
+                            <img class="w-10 h-10 rounded-full object-cover bg-white ring-2 ring-gray-100" src="${a.avatar}">
+                            <div>
+                                <h4 class="font-bold text-sm leading-tight">${a.fullname} ${a.role==='admin'?'<span class="text-[9px] bg-red-500 text-white px-1 rounded">ADMIN</span>':''}</h4>
+                                <div class="text-[10px] text-gray-400 flex items-center gap-1.5">@${a.customId} • <i class="fa-solid fa-${privIcon}"></i></div>
+                            </div>
+                        </div>
+                        ${isOwner ? `<button onclick="openEditPostModal('${p.id}', '${p.privacy}')" class="p-2 text-gray-400 hover:text-blue-500"><i class="fa-solid fa-ellipsis"></i></button>` : ''}
+                    </div>
+                    ${p.content ? `<p class="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">${escapeHtml(p.content)}</p>` : ''}
+                    ${p.media ? `<div class="rounded-2xl overflow-hidden bg-black/5 flex items-center justify-center">${p.media.type==='video'?`<video src="${p.media.data}" controls class="w-full max-h-80 object-contain" playsinline></video>`:`<img src="${p.media.data}" class="w-full max-h-80 object-cover cursor-pointer" onclick="window.open('${p.media.data}')">`}</div>` : ''}
+                    <div class="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700 text-xs font-semibold text-gray-500">
+                        <button onclick="toggleLikePost('${p.id}')" class="flex items-center gap-1.5 px-2 py-1 rounded-xl ${isLiked?'text-red-500':''}"><i class="${isLiked?'fa-solid':'fa-regular'} fa-heart"></i> ${p.likes?.length||0}</button>
+                        <div class="flex items-center gap-1.5 px-2 py-1"><i class="fa-regular fa-comment"></i> ${p.comments?.length||0}</div>
+                    </div>
+                    <div class="pt-1 space-y-2">
+                        ${p.comments?.map(c => `
+                            <div class="flex gap-2 text-xs">
+                                <img class="w-6 h-6 rounded-full object-cover shrink-0 cursor-pointer" onclick="openProfileModal('${c.authorId}')" src="${c.authorAvatar}">
+                                <div class="bg-gray-100 dark:bg-gray-700/60 p-2 rounded-xl flex-1"><span class="font-bold cursor-pointer" onclick="openProfileModal('${c.authorId}')">${c.authorName}:</span> <span class="text-gray-700 dark:text-gray-200">${escapeHtml(c.text)}</span></div>
+                            </div>`).join('') || ''}
+                        <form onsubmit="handleAddComment(event, '${p.id}')" class="flex gap-2 pt-1">
+                            <input type="text" placeholder="Bình luận..." class="flex-1 px-3 py-1.5 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-xs border border-gray-200 dark:border-gray-600 focus:outline-none">
+                            <button type="submit" class="px-3 bg-blue-600 text-white rounded-xl text-xs font-semibold"><i class="fa-solid fa-paper-plane"></i></button>
+                        </form>
+                    </div>
+                </div>`;
+        }
+        function toggleLikePost(pid) { const p=posts.find(x=>x.id===pid); if(p){ const i=p.likes.indexOf(currentUser.id); i>-1?p.likes.splice(i,1):p.likes.push(currentUser.id); saveStorage(); renderFeed(); if(inspectingUserId)openProfileModal(inspectingUserId); } }
+        function handleAddComment(e, pid) { e.preventDefault(); const i=e.target.querySelector('input'); if(i.value.trim()){ posts.find(x=>x.id===pid).comments.push({ id: 'cmt_'+Date.now(), authorId: currentUser.id, authorName: currentUser.fullname, authorAvatar: currentUser.avatar, text: i.value.trim() }); saveStorage(); i.value=''; renderFeed(); if(inspectingUserId)openProfileModal(inspectingUserId); } }
+        function openEditPostModal(pid, priv) { document.getElementById('edit-post-id').value=pid; document.getElementById('edit-post-text').value=posts.find(x=>x.id===pid).content||''; document.getElementById('edit-post-privacy').value=priv; document.getElementById('modal-edit-post').classList.remove('hidden'); }
+        function savePostEdit() { const p = posts.find(x=>x.id===document.getElementById('edit-post-id').value); if(p){ p.content=document.getElementById('edit-post-text').value; p.privacy=document.getElementById('edit-post-privacy').value; saveStorage(); document.getElementById('modal-edit-post').classList.add('hidden'); renderFeed(); if(inspectingUserId)openProfileModal(inspectingUserId); showToast('Cập nhật thành công!','success');} }
+
+        /* ================= GROUP, CALL & FRIENDS ================= */
+        function openCreateGroupModal() {
+            const list = users.filter(u=>u.id!==currentUser.id && !u.isBanned);
+            document.getElementById('group-members-list').innerHTML = list.length ? list.map(u=>`<label class="flex items-center gap-2 p-1.5"><input type="checkbox" value="${u.id}" class="group-cb rounded text-blue-600 w-4 h-4"><img class="w-6 h-6 rounded-full object-cover" src="${u.avatar}"><span class="font-bold">${u.fullname}</span></label>`).join('') : '<p class="text-xs text-gray-500">Chưa có bạn bè.</p>';
+            document.getElementById('group-name-input').value='';
+            document.getElementById('modal-create-group').classList.remove('hidden');
+        }
+        function confirmCreateGroup() {
+            const name = document.getElementById('group-name-input').value.trim();
+            const ids = Array.from(document.querySelectorAll('.group-cb:checked')).map(cb=>cb.value);
+            if(!name) return showToast('Nhập tên nhóm!', 'error');
+            ids.push(currentUser.id);
+            const g = { id: 'grp_'+Date.now(), isGroup: true, name: name, avatar: `https://api.dicebear.com/7.x/identicon/svg?seed=${name}`, members: ids, messages: [{id:'msg_w', senderId:currentUser.id, text:`🎉 Tạo nhóm "${name}" thành công!`, timestamp:new Date().toISOString()}] };
+            chats.push(g); saveStorage(); document.getElementById('modal-create-group').classList.add('hidden'); switchTab('chat'); selectConversation(g.id); showToast('Tạo nhóm thành công!', 'success');
+        }
+
+        function initiateCall(type) {
+            if(!activeChatTargetId) return showToast('Chọn người để gọi!', 'error');
+            document.getElementById('modal-call').classList.remove('hidden');
+            document.getElementById('call-target-name').innerText = document.getElementById('active-chat-name').innerText;
+            document.getElementById('call-target-avatar').src = document.getElementById('active-chat-avatar').src;
+            if(type==='video') { document.getElementById('call-audio-visual').classList.add('hidden'); document.getElementById('call-video-visual').classList.remove('hidden'); startCameraStream(); }
+            else { document.getElementById('call-video-visual').classList.add('hidden'); document.getElementById('call-audio-visual').classList.remove('hidden'); }
+            setTimeout(()=>{ document.getElementById('call-status-label').innerText='Cuộc gọi đang diễn ra'; }, 2000);
+        }
+        let callStream;
+        async function startCameraStream() { try { callStream = await navigator.mediaDevices.getUserMedia({video:true}); document.getElementById('call-local-video').srcObject=callStream; document.getElementById('call-remote-video').srcObject=callStream; } catch(e){} }
+        function endCall() { document.getElementById('modal-call').classList.add('hidden'); if(callStream) callStream.getTracks().forEach(t=>t.stop()); showToast('Kết thúc cuộc gọi.'); }
+        function toggleCallMic() { document.getElementById('call-btn-mic').classList.toggle('bg-red-600'); }
+        function toggleCallCam() { document.getElementById('call-btn-cam').classList.toggle('bg-red-600'); }
+
+        function sendFriendRequest() {
+            const id = document.getElementById('friend-search-id').value.trim().toLowerCase().replace(/^@/,'');
+            if(id === currentUser.customId) return showToast('Không thể tự kết bạn!', 'error');
+            const target = users.find(u=>u.customId===id);
+            if(!target) return showToast('Không tìm thấy Custom ID!', 'error');
+            if(target.friends.includes(currentUser.id)) return showToast('Đã là bạn bè!', 'info');
+            if(target.friendRequests.includes(currentUser.id)) return showToast('Đã gửi lời mời trước đó!', 'info');
+            target.friendRequests.push(currentUser.id); saveStorage(); document.getElementById('friend-search-id').value=''; showToast(`Đã gửi tới @${target.customId}!`, 'success');
+        }
+        function acceptFriend(id) { currentUser.friends.push(id); currentUser.friendRequests=currentUser.friendRequests.filter(x=>x!==id); const s=users.find(u=>u.id===id); if(s)s.friends.push(currentUser.id); saveStorage(); renderFriendsTab(); showToast('Đã chấp nhận!', 'success'); }
+        function declineFriend(id) { currentUser.friendRequests=currentUser.friendRequests.filter(x=>x!==id); saveStorage(); renderFriendsTab(); }
+        function updateBadge() { const c = currentUser.friendRequests?.length||0; document.getElementById('friend-req-badge').innerText=c; document.getElementById('mob-friend-badge').innerText=c; c?document.getElementById('friend-req-badge').classList.remove('hidden'):document.getElementById('friend-req-badge').classList.add('hidden'); c?document.getElementById('mob-friend-badge').classList.remove('hidden'):document.getElementById('mob-friend-badge').classList.add('hidden'); }
+        function renderFriendsTab() {
+            updateBadge();
+            const reqs = currentUser.friendRequests?.map(id=>users.find(u=>u.id===id)).filter(Boolean)||[];
+            document.getElementById('friend-req-count').innerText = reqs.length;
+            document.getElementById('friend-requests-list').innerHTML = reqs.length ? reqs.map(u=>`<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-2xl"><div class="flex items-center gap-2 cursor-pointer" onclick="openProfileModal('${u.id}')"><img class="w-8 h-8 rounded-full" src="${u.avatar}"><div><div class="font-bold text-xs">${u.fullname}</div><div class="text-[10px] text-gray-400">@${u.customId}</div></div></div><div class="flex gap-1"><button onclick="acceptFriend('${u.id}')" class="px-2 py-1 bg-blue-600 text-white rounded text-xs">Đồng ý</button><button onclick="declineFriend('${u.id}')" class="px-2 py-1 bg-gray-200 text-gray-700 rounded text-xs">Hủy</button></div></div>`).join(''):'<p class="text-xs text-gray-400">Không có lời mời mới.</p>';
+            
+            const frs = currentUser.friends?.map(id=>users.find(u=>u.id===id)).filter(Boolean)||[];
+            document.getElementById('my-friends-count').innerText = frs.length;
+            document.getElementById('my-friends-list').innerHTML = frs.length ? frs.map(u=>`<div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-2xl flex justify-between items-center"><div class="flex gap-2 cursor-pointer" onclick="openProfileModal('${u.id}')"><img class="w-9 h-9 rounded-full" src="${u.avatar}"><div><div class="font-bold text-xs">${u.fullname}</div><div class="text-[10px] text-gray-400">@${u.customId}</div></div></div><button onclick="switchTab('chat');selectConversation('${u.id}')" class="p-2 text-blue-600 bg-blue-50 dark:bg-gray-600 rounded-xl"><i class="fa-solid fa-paper-plane"></i></button></div>`).join(''):'<p class="text-xs text-gray-400 col-span-2">Chưa có bạn bè.</p>';
+        }
+
+        /* ================= ADMIN ================= */
+        function openAdminModal() {
+            document.getElementById('modal-admin').classList.remove('hidden');
+            if(currentUser?.role==='admin') {
+                document.getElementById('admin-auth-guard').classList.add('hidden'); document.getElementById('admin-panel-content').classList.remove('hidden');
+                document.getElementById('admin-user-table').innerHTML = users.map(u=>`<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30"><td class="p-2 flex gap-2 items-center"><img src="${u.avatar}" class="w-7 h-7 rounded-full"><div><div class="font-bold">${u.fullname}</div><div class="text-[9px] text-gray-400">@${u.customId}</div></div></td><td class="p-2">${u.isBanned?'<span class="text-red-500 font-bold">Banned</span>':u.isMuted?'<span class="text-yellow-500 font-bold">Muted</span>':'<span class="text-green-500">Active</span>'}</td><td class="p-2 text-right">${u.role!=='admin'?`<button onclick="toggleBan('${u.id}')" class="px-2 py-1 bg-red-100 text-red-600 rounded mr-1 hover:bg-red-200">Ban</button><button onclick="toggleMute('${u.id}')" class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200">Mute</button>`:'Admin'}</td></tr>`).join('');
+            } else { document.getElementById('admin-auth-guard').classList.remove('hidden'); document.getElementById('admin-panel-content').classList.add('hidden'); }
+        }
+        function toggleBan(id) { const u=users.find(x=>x.id===id); if(u){ u.isBanned=!u.isBanned; saveStorage(); openAdminModal(); showToast('Đã cập nhật trạng thái Ban.');} }
+        function toggleMute(id) { const u=users.find(x=>x.id===id); if(u){ u.isMuted=!u.isMuted; saveStorage(); openAdminModal(); showToast('Đã cập nhật trạng thái Mute.');} }
+        function clearAllData() { localStorage.removeItem(STORAGE_KEY_USERS); localStorage.removeItem(STORAGE_KEY_POSTS); localStorage.removeItem(STORAGE_KEY_CHATS); location.reload(); }
+        function checkMutedBanner() { document.getElementById('muted-banner').classList.toggle('hidden', !currentUser.isMuted); if(currentUser.isMuted) document.getElementById('chat-input-wrapper').classList.add('opacity-50','pointer-events-none'); else document.getElementById('chat-input-wrapper').classList.remove('opacity-50','pointer-events-none'); }
+        function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+        function handleActiveTargetClick() { if(activeChatTargetId && !chats.some(c=>c.id===activeChatTargetId && c.isGroup)) openProfileModal(activeChatTargetId); }
+
+        Object.assign(window, { showAuthTab, handleLogin, handleRegister, resetBrokenAuthStorage, togglePasswordVisibility, switchTab, logout, toggleDarkMode, renderConversationList, selectConversation, closeMobileChat, handleSendMessage, handleSendChatMedia, insertEmoji, addReaction, startAudioRecording, cancelAudioRecording, stopAndSendAudioRecording, openProfileModal, closeProfileModal, toggleEditProfileBox, saveProfileChanges, handleAvatarFileChange, handlePostMediaSelected, clearPostMedia, handleCreatePost, toggleLikePost, handleAddComment, openEditPostModal, savePostEdit, openCreateGroupModal, confirmCreateGroup, initiateCall, toggleCallMic, toggleCallCam, endCall, sendFriendRequest, acceptFriend, declineFriend, openAdminModal, toggleBan, toggleMute, clearAllData, handleActiveTargetClick });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem(STORAGE_KEY_AUTH);
+            if(saved) { const u = users.find(x=>x.id===saved); if(u && (!u.isBanned || u.role==='admin')) { currentUser = u; onUserLoggedIn(); } }
+            document.getElementById('form-login').addEventListener('submit', handleLogin);
+            document.getElementById('form-register').addEventListener('submit', handleRegister);
+        });
+    </script>
+</body>
+</html>
